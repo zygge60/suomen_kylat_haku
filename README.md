@@ -46,7 +46,7 @@ Haku toimii ilman verkkoyhteyttä. Taustakartat ja ulkoiset linkit tarvitsevat v
 
 | Tiedosto | Sisältö |
 |---|---|
-| `suomen_kylat_haku.html` | Hakuohjelma. Aineisto ja karttakirjasto ovat tiedoston sisällä. |
+| `index.html` | Hakuohjelma. Aineisto ja karttakirjasto ovat tiedoston sisällä. |
 | `suomen_kylat_v1.json` | Koko aineisto JSON-muodossa, mukana WGS84-koordinaatit ja täydet linkit |
 | `Suomen_kylat_v1.csv` | Kansallisarkiston alkuperäinen aineisto (Zenodo) |
 | `docs/Suomen_kylat_haku_kayttoohje.pdf` | Käyttöohje |
