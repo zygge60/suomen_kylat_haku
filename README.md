@@ -8,8 +8,11 @@ Ohjelma on yksi HTML-tiedosto, jonka sisällä ovat aineisto ja karttakirjasto. 
 
 ## Käyttö
 
-1. Lataa tiedosto `suomen_kylat_haku.html` (tai koko kansio).
+1. Lataa tiedosto `index.html` (tai koko kansio).
 2. Avaa se tuplaklikkaamalla. Ohjelma aukeaa selaimessa (Chrome, Edge tai Firefox).
+
+Tai voit avata ohjelman verkosta osoitteesta:
+https://zygge60.github.io/suomen_kylat_haku/
 
 Haku toimii ilman verkkoyhteyttä. Taustakartat ja ulkoiset linkit tarvitsevat verkon. Tarkempi käyttöohje on tiedostossa `docs/Suomen_kylat_haku_kayttoohje.pdf` ja ohjelman Ohje-sivulla.
 
