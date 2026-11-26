@@ -1,0 +1,1618 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="version" content="1.0">
+<title>Suomen kylät 1540–1940 – kylähaku</title>
+<style>/*__LEAFLET_CSS__*/</style>
+<style>
+:root{
+  --pri:#1f4e5f; --pri2:#2c6a80; --bg:#f4f1ea; --panel:#fbfaf6; --line:#d9d3c5; --text:#1d2a30; --muted:#5d6a70;
+  --ole:#1f6f8b; --lak:#a0522d; --luo:#7b4fa0; --sel:#d62828; --warn:#b26b00; --ok:#2e7d32;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;display:flex;flex-direction:column;font:16px/1.45 "Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;color:var(--text);background:var(--bg)}
+button,input,select{font:inherit;color:inherit}
+a{color:var(--pri2)}
+header{display:flex;gap:14px;align-items:center;padding:8px 16px;background:var(--pri);color:#fff;flex-wrap:wrap}
+header h1{font-size:1.25rem;margin:0;white-space:nowrap;font-weight:600}
+header .sub{font-size:.8rem;opacity:.85;display:block;font-weight:400}
+.searchwrap{position:relative;flex:1;min-width:260px;max-width:760px}
+#q{width:100%;padding:9px 38px 9px 12px;border-radius:6px;border:0;font-size:1.05rem;color:var(--text)}
+#qClear{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:none;font-size:1.3rem;cursor:pointer;color:#777;line-height:1;padding:2px 6px}
+.suggest{position:absolute;left:0;right:0;top:calc(100% + 4px);background:#fff;color:var(--text);border:1px solid var(--line);border-radius:6px;box-shadow:0 6px 20px rgba(0,0,0,.18);z-index:2000;max-height:60vh;overflow:auto}
+.suggest div{padding:7px 12px;cursor:pointer;border-bottom:1px solid #f0ece2}
+.suggest div:last-child{border-bottom:0}
+.suggest div:hover,.suggest div.act{background:#e9f1f4}
+.suggest small{color:var(--muted)}
+.hbtn{background:#fff;color:var(--pri);border:0;border-radius:6px;padding:8px 14px;cursor:pointer;font-weight:600}
+main{flex:1;display:grid;grid-template-columns:minmax(400px,40%) 1fr;min-height:0}
+#left{display:flex;flex-direction:column;min-height:0;border-right:1px solid var(--line);background:var(--panel)}
+#filters{overflow:auto;max-height:55%;border-bottom:1px solid var(--line);flex:0 0 auto;background:#f1ede3}
+.ftitle{display:flex;justify-content:space-between;align-items:center;padding:6px 12px 4px;font-weight:600;font-size:.9rem;color:var(--muted)}
+.ftitle button{font-size:.85rem}
+.ftabs{display:flex;flex-wrap:wrap;gap:5px;padding:2px 12px 8px}
+.ftabs button{border:1px solid #bdb6a6;background:#fff;border-radius:16px;padding:3px 11px;cursor:pointer;font-size:.88rem;display:inline-flex;align-items:center;gap:5px}
+.ftabs button:hover{border-color:var(--pri2);background:#eef4f6}
+.ftabs button[aria-expanded=true]{background:var(--pri2);border-color:var(--pri2);color:#fff}
+.ftabs .on{width:8px;height:8px;border-radius:50%;background:#e07b00;display:inline-block}
+.ftabs .on[hidden]{display:none}
+.fpanel{border-top:1px solid #e3ddd0;background:#fff}
+.ptitle{font-weight:600;padding:8px 14px 0;color:var(--pri);display:flex;justify-content:space-between;align-items:center}
+.fbody{padding:4px 14px 12px 14px;display:grid;gap:8px}
+.fbody label{display:block}
+.row2{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.fbody input[type=text],.fbody input[type=number],.fbody select{padding:5px 8px;border:1px solid #bdb6a6;border-radius:5px;background:#fff;min-width:0}
+.fbody input[type=text]{width:100%}
+.fbody input[type=number]{width:6.5em}
+.hint{font-size:.82rem;color:var(--muted)}
+.radios label{display:inline-flex;align-items:center;gap:4px;margin-right:12px}
+.checks{display:grid;grid-template-columns:1fr 1fr;gap:2px 10px}
+.acwrap{position:relative}
+.acwrap .suggest{top:100%}
+.btn{border:1px solid var(--pri2);background:#fff;color:var(--pri);border-radius:5px;padding:5px 10px;cursor:pointer}
+.btn:hover{background:#e9f1f4}
+.btn.pri{background:var(--pri2);color:#fff}
+.btn.pri:hover{background:var(--pri)}
+.btn.sm{padding:2px 8px;font-size:.85rem}
+#chips{display:flex;flex-wrap:wrap;gap:6px;padding:8px 12px 0}
+.chip{background:#e3edf1;border:1px solid #b7cfd8;border-radius:14px;padding:2px 4px 2px 10px;font-size:.85rem;display:inline-flex;align-items:center;gap:4px}
+.chip button{border:0;background:none;cursor:pointer;font-size:1rem;line-height:1;color:var(--pri);padding:0 4px}
+.reshead{display:flex;align-items:center;gap:10px;padding:8px 12px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+#count{font-weight:700}
+.reshead .sp{flex:1}
+.reshead select{padding:3px 6px;border:1px solid #bdb6a6;border-radius:5px;background:#fff}
+.exp{display:inline-flex;gap:4px;align-items:center;font-size:.85rem;color:var(--muted)}
+#results{flex:1;overflow:auto;min-height:0}
+table.res{width:100%;border-collapse:collapse;font-size:.95rem}
+table.res th{position:sticky;top:0;background:#efebe1;text-align:left;padding:6px 8px;font-size:.82rem;color:var(--muted);cursor:pointer;user-select:none;z-index:1;white-space:nowrap}
+table.res th.sorted::after{content:" ▾"}
+table.res td{padding:6px 8px;border-bottom:1px solid #ebe6da;vertical-align:top}
+table.res tr{cursor:pointer}
+table.res tbody tr:hover{background:#eef4f6}
+table.res tr.sel{background:#fde8e1}
+table.res tr:focus{outline:2px solid var(--pri2);outline-offset:-2px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.st-ole .dot,.lg-ole{background:var(--ole)} .st-lak .dot,.lg-lak{background:var(--lak)} .st-luo .dot,.lg-luo{background:var(--luo)}
+.sub{font-size:.8rem;color:var(--muted)}
+.hit{font-size:.8rem;color:var(--ok)}
+.unc{color:var(--warn)}
+.nores{padding:24px;color:var(--muted)}
+.more{padding:10px;text-align:center;color:var(--muted);font-size:.85rem}
+#right{display:flex;flex-direction:column;min-height:0;min-width:0}
+#map{flex:1;min-height:180px;background:#dde3e6}
+#card{flex:0 0 auto;max-height:62%;overflow:auto;overflow-x:hidden;background:#fff;border-top:3px solid var(--pri2);padding:10px 16px 16px;position:relative}
+#card.big{max-height:none;flex:1}
+.chead{display:flex;align-items:flex-start;gap:8px}
+.chead h2{margin:0;font-size:1.4rem;flex:1}
+.chead .btn{white-space:nowrap}
+.badges{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 4px}
+.badge{border-radius:4px;padding:1px 8px;font-size:.82rem;color:#fff}
+.badge.ole{background:var(--ole)} .badge.lak{background:var(--lak)} .badge.luo{background:var(--luo)} .badge.gr{background:#eee;color:var(--text)}
+#card h3{font-size:1rem;margin:14px 0 6px;color:var(--pri);border-bottom:1px solid #e6e1d6;padding-bottom:2px}
+dl.kv{display:grid;grid-template-columns:max-content 1fr;gap:3px 14px;margin:0}
+dl.kv dt{color:var(--muted)} dl.kv dd{margin:0;overflow-wrap:anywhere;min-width:0}
+.tl{list-style:none;margin:0;padding:0;border-left:3px solid var(--pri2)}
+.tl li{padding:3px 0 3px 12px;position:relative}
+.tl li::before{content:"";position:absolute;left:-7px;top:10px;width:11px;height:11px;border-radius:50%;background:#fff;border:2px solid var(--pri2)}
+.tl .yrs{display:inline-block;min-width:7.5em;font-variant-numeric:tabular-nums;color:var(--muted)}
+.tl .none{color:#999;font-style:italic}
+.tag{font-size:.75rem;border:1px solid var(--warn);color:var(--warn);border-radius:3px;padding:0 4px;margin-left:6px}
+.tag.ok{border-color:var(--ok);color:var(--ok)}
+.pklist{margin:6px 0;padding:0;list-style:none}
+.pklist li{margin:5px 0}
+.pklist a.pkbtn{display:inline-block;padding:5px 10px;border:1px solid var(--pri2);border-radius:5px;text-decoration:none;color:var(--pri);background:#f4f9fb;font-size:.9rem}
+.pklist a.pkbtn:hover{background:#dcebf1}
+.links{display:flex;flex-wrap:wrap;gap:6px}
+.links a{display:inline-block;padding:5px 10px;border:1px solid var(--pri2);border-radius:5px;text-decoration:none;color:var(--pri);background:#f4f9fb;font-size:.9rem}
+.links a:hover{background:#dcebf1}
+.links a::after{content:" ↗";font-size:.8em}
+.crow{display:grid;grid-template-columns:1fr auto;gap:0 10px;align-items:center;padding:5px 0;border-bottom:1px solid #eee}
+.crow .k{font-size:.8rem;color:var(--muted)}
+.crow .v{font-family:Consolas,"DejaVu Sans Mono",monospace;font-size:.98rem;font-weight:600;user-select:all}
+.crow button{grid-row:1 / span 2;grid-column:2}
+.near{margin:0;padding-left:20px}
+.near a{cursor:pointer}
+.note{background:#fff8e6;border:1px solid #f0d9a6;border-radius:5px;padding:6px 10px;font-size:.85rem;margin:6px 0}
+#toast{position:fixed;left:50%;bottom:40px;transform:translateX(-50%);background:#222;color:#fff;padding:8px 16px;border-radius:6px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:5000}
+#toast.show{opacity:.92}
+footer{font-size:.75rem;color:var(--muted);padding:3px 12px;border-top:1px solid var(--line);background:var(--panel)}
+footer a{color:var(--muted)}
+.legend{background:rgba(255,255,255,.92);padding:3px 8px;border-radius:5px;font-size:.76rem;box-shadow:0 1px 4px rgba(0,0,0,.3);display:flex;flex-wrap:wrap;gap:2px 10px;max-width:calc(100vw - 40px)}
+.legend>span{white-space:nowrap}
+.legend span.d{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}
+.pickbtn{background:#fff;border:2px solid rgba(0,0,0,.2);border-radius:4px;padding:5px 9px;cursor:pointer;font-size:.85rem;font-weight:600;color:var(--pri)}
+.pickbtn.on{background:var(--sel);color:#fff}
+.mapbtns{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.maphint{background:rgba(255,248,230,.95);border:1px solid #e0c48a;border-radius:5px;padding:4px 8px;font-size:.8rem;max-width:260px;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+.maphint[hidden]{display:none}
+.pickbtn:disabled{opacity:.6;cursor:wait}
+body.exporting main{grid-template-columns:1fr}
+body.exporting #left,body.exporting #card,body.exporting #tabs{display:none!important}
+body.exporting #right{display:flex!important}
+body.exporting #map{display:block!important}
+.map-pick{cursor:crosshair!important}
+dialog{max-width:820px;width:92vw;border:0;border-radius:10px;padding:0;box-shadow:0 10px 40px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(0,0,0,.4)}
+.dlghead{display:flex;justify-content:space-between;align-items:center;background:var(--pri);color:#fff;padding:10px 18px;position:sticky;top:0}
+.dlghead h2{margin:0;font-size:1.2rem}
+.dlgbody{padding:6px 22px 18px;max-height:75vh;overflow:auto}
+.dlgbody h3{color:var(--pri);margin:16px 0 4px}
+.dlgbody table{border-collapse:collapse;font-size:.9rem}
+.dlgbody td,.dlgbody th{border:1px solid #ddd;padding:3px 8px;text-align:left;vertical-align:top}
+#tabs{display:none}
+@media (min-width:1200px){#right{flex-direction:row}#card{max-height:none;flex:0 0 46%;border-top:0;border-left:3px solid var(--pri2)}#card.big{flex:0 0 72%}}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (max-width:900px){
+  main{grid-template-columns:1fr}
+  #left,#right{display:none}
+  body[data-tab=haku] #left{display:flex}
+  body[data-tab=kartta] #right,body[data-tab=kyla] #right{display:flex}
+  body[data-tab=kartta] #card{display:none}
+  body[data-tab=kyla] #map{display:none}
+  body[data-tab=kyla] #card{max-height:none;flex:1}
+  #filters{max-height:45%}
+  #tabs{display:flex;border-top:1px solid var(--line);background:#fff}
+  #tabs button{flex:1;padding:10px;border:0;background:none;font-weight:600;color:var(--muted)}
+  #tabs button.act{color:var(--pri);box-shadow:inset 0 3px 0 var(--pri2)}
+  header h1 .sub{display:none}
+  footer{display:none}
+  .checks{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body data-tab="haku">
+<header>
+  <h1>Suomen kylät 1540–1940<span class="sub">Kansallisarkiston kyläaineiston haku sukututkijoille · versio 1.0</span></h1>
+  <div class="searchwrap">
+    <label for="q" class="vh">Haku</label>
+    <input id="q" type="search" placeholder="Kylän nimi, pitäjä, rekisteritunnus tai koordinaatit…" autocomplete="off" spellcheck="false">
+    <button id="qClear" title="Tyhjennä hakukenttä" aria-label="Tyhjennä hakukenttä">×</button>
+    <div id="qSuggest" class="suggest" hidden></div>
+  </div>
+  <button class="hbtn" id="helpBtn">Ohje</button>
+</header>
+
+<main>
+<section id="left" aria-label="Haku ja tulokset">
+  <div id="filters">
+    <div class="ftitle"><span>Tarkenna hakua:</span><button class="btn sm" id="resetAll" title="Poista kaikki hakuehdot">Tyhjennä kaikki ehdot</button></div><div class="ftabs" role="tablist"><button type="button" data-f="fsName" aria-expanded="false">Nimihaku<span class="on" hidden></span></button><button type="button" data-f="fsParish" aria-expanded="false">Pitäjä<span class="on" hidden></span></button><button type="button" data-f="fsTime" aria-expanded="false">Aika ja tila<span class="on" hidden></span></button><button type="button" data-f="fsIds" aria-expanded="false">Tunnukset<span class="on" hidden></span></button><button type="button" data-f="fsPlace" aria-expanded="false">Kartta ja etäisyys<span class="on" hidden></span></button><button type="button" data-f="fsCoord" aria-expanded="false">Koordinaatit<span class="on" hidden></span></button><button type="button" data-f="fsHas" aria-expanded="false">Lisäsuodattimet<span class="on" hidden></span></button></div>
+
+    <div class="fpanel" id="fsName" hidden><div class="ptitle"><span>Nimihaun tapa</span><button type="button" class="btn sm pclose" title="Piilota osio (ehdot pysyvät voimassa)">Piilota ▴</button></div>
+      <div class="fbody">
+        <div class="radios" role="radiogroup">
+          <label><input type="radio" name="mode" value="sis" checked> Sisältää</label>
+          <label><input type="radio" name="mode" value="alk"> Alkaa</label>
+          <label><input type="radio" name="mode" value="tark"> Täsmälleen</label>
+          <label><input type="radio" name="mode" value="sum"> Sumea (vanhat kirjoitusasut)</label>
+        </div>
+        <div class="hint">Haku kohdistuu nykyiseen nimeen, vanhaan kirjoitusasuun ja muihin nimimuotoihin. Jokerimerkit: <b>*</b> = mitä tahansa, <b>?</b> = yksi kirjain (esim. <i>Kuu*la</i>). Sumea haku löytää myös eri tavoin kirjoitetut nimet (w/v, c/k, th/t, kaksoiskirjaimet, -lax/-la…).</div>
+        <label><input type="checkbox" id="useRkyla"> Hae myös rekisterikylän nimestä (2013)</label>
+      </div>
+    </div>
+
+    <div class="fpanel" id="fsParish" hidden><div class="ptitle"><span>Pitäjä ja ajankohta</span><button type="button" class="btn sm pclose" title="Piilota osio (ehdot pysyvät voimassa)">Piilota ▴</button></div>
+      <div class="fbody">
+        <label>Pitäjä tai kunta
+          <span class="acwrap" style="display:block"><input type="text" id="parish" autocomplete="off" placeholder="esim. Taivassalo"><span id="parishSuggest" class="suggest" hidden></span></span>
+        </label>
+        <label>Ajankohta
+          <select id="period">
+            <option value="-1">Mikä tahansa ajankohta 1550–2023</option>
+          </select>
+        </label>
+        <label><input type="checkbox" id="unc" checked> Ota mukaan epävarmat (?) merkinnät</label>
+        <div class="hint">Kirjoitettu nimi löytää myös kappelit ja pitäjänosat (esim. <i>Iniö</i> → "Taivassalo, Iniön kappeli"). Listasta valittu nimi rajaa täsmälleen siihen pitäjään.</div>
+      </div>
+    </div>
+
+    <div class="fpanel" id="fsTime" hidden><div class="ptitle"><span>Aika ja tila</span><button type="button" class="btn sm pclose" title="Piilota osio (ehdot pysyvät voimassa)">Piilota ▴</button></div>
+      <div class="fbody">
+        <div class="row2">Kylä olemassa vuosina <input type="number" id="y1" min="1300" max="2030" placeholder="vuosi"> – <input type="number" id="y2" min="1300" max="2030" placeholder="vuosi"></div>
+        <div class="hint">Yksi vuosi riittää. Ehto: varhaisin lähdemaininta ≤ vuosi ≤ arvioitu lakkaaminen.</div>
+        <label>Tila
+          <select id="status">
+            <option value="">Kaikki kylät</option>
+            <option value="ole">Edelleen kylä</option>
+            <option value="lak">Lakannut / autioitunut (muu kuin 1944)</option>
+            <option value="luo">Lakannut 1944 (luovutettu alue)</option>
+            <option value="nyk">Varhaisin maininta vasta 2023 nimistössä</option>
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <div class="fpanel" id="fsIds" hidden><div class="ptitle"><span>Tunnukset ja viitteet</span><button type="button" class="btn sm pclose" title="Piilota osio (ehdot pysyvät voimassa)">Piilota ▴</button></div>
+      <div class="fbody">
+        <label>Rekisteritunnus (kunta-kylä) <input type="text" id="rt" placeholder="esim. 833-456 tai 833-"></label>
+        <label>Rekisterikunta 2013 <input type="text" id="rk" placeholder="esim. Taivassalo"></label>
+        <label>Rekisterikylä 2013 <input type="text" id="ry" placeholder="esim. Uskoinen"></label>
+        <label>Suomen asutus 1560-luvulla -viite (sivu,rivi) <input type="text" id="a1560" placeholder="esim. 1,02 tai 256,"></label>
+        <label>Aineiston tunniste (id) <input type="text" id="idq" placeholder="esim. 10002"></label>
+      </div>
+    </div>
+
+    <div class="fpanel" id="fsPlace" hidden><div class="ptitle"><span>Kartta ja etäisyys</span><button type="button" class="btn sm pclose" title="Piilota osio (ehdot pysyvät voimassa)">Piilota ▴</button></div>
+      <div class="fbody">
+        <label><input type="checkbox" id="inView"> Näytä vain kartan näkyvällä alueella olevat kylät</label>
+        <div class="row2">Etäisyysraja <select id="radius">
+          <option value="1">1 km</option><option value="2">2 km</option><option value="5" selected>5 km</option>
+          <option value="10">10 km</option><option value="20">20 km</option><option value="50">50 km</option>
+          <option value="100">100 km</option><option value="150">150 km</option><option value="200">200 km</option><option value="250">250 km</option><option value="300">300 km</option></select>
+          <button class="btn sm" id="pickBtn2">Valitse piste kartalta</button></div>
+        <div id="pointInfo" class="hint">Valitse piste kartalta, kylän tietokortista ("Kylät lähellä") tai koordinaateista.</div>
+        <div><button class="btn sm" id="clearPoint" hidden>Poista paikkarajaus</button></div>
+      </div>
+    </div>
+
+    <div class="fpanel" id="fsCoord" hidden><div class="ptitle"><span>Koordinaattihaku</span><button type="button" class="btn sm pclose" title="Piilota osio (ehdot pysyvät voimassa)">Piilota ▴</button></div>
+      <div class="fbody">
+        <label>Liitä koordinaatit <input type="text" id="coordIn" placeholder="esim. 60.6132, 21.6596 tai N 6731583 E 207875"></label>
+        <div class="row2"><button class="btn pri sm" id="coordGo">Hae lähimmät kylät</button></div>
+        <div id="coordMsg" class="hint">Tunnistaa: WGS84 (desimaaliasteet, asteet ja minuutit, asteet-minuutit-sekunnit), ETRS-TM35FIN, ETRS-GK-kaistat ja KKJ (YKJ).</div>
+      </div>
+    </div>
+
+    <div class="fpanel" id="fsHas" hidden><div class="ptitle"><span>Lisäsuodattimet</span><button type="button" class="btn sm pclose" title="Piilota osio (ehdot pysyvät voimassa)">Piilota ▴</button></div>
+      <div class="fbody">
+        <div class="hint">Näytä vain kylät, joilla on:</div>
+        <div class="checks">
+          <label><input type="checkbox" data-has="coords"> koordinaatit</label>
+          <label><input type="checkbox" data-has="placeid"> Nimistö-linkki (MML)</label>
+          <label><input type="checkbox" data-has="wd"> Wikidata-linkki</label>
+          <label><input type="checkbox" data-has="yso"> YSO-paikat-linkki</label>
+          <label><input type="checkbox" data-has="beb"> Bebyggelsenamn-linkki</label>
+          <label><input type="checkbox" data-has="her"> Heraldica-linkki</label>
+          <label><input type="checkbox" data-has="df"> Diplomatarium Fennicum</label>
+          <label><input type="checkbox" data-has="a1560"> Asutus 1560-luvulla -viite</label>
+          <label><input type="checkbox" data-has="maara"> Kansallisarkiston aineistoja</label>
+          <label><input type="checkbox" data-has="nocoords"> EI koordinaatteja</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="chips" aria-live="polite"></div>
+  <div class="reshead">
+    <span id="count">–</span>
+    <span class="sp"></span>
+    <label>Järjestys <select id="sort">
+      <option value="auto">Osuvuus / nimi</option>
+      <option value="nimi">Nimi A–Ö</option>
+      <option value="pitaja">Pitäjä</option>
+      <option value="kunta">Kunta 2023</option>
+      <option value="alku">Varhaisin maininta</option>
+      <option value="loppu">Lakkaaminen</option>
+      <option value="etaisyys">Etäisyys</option>
+    </select></label>
+    <span class="exp">Tallenna tulos:
+      <button class="btn sm" data-exp="csv" title="Excel-yhteensopiva CSV">CSV</button>
+      <button class="btn sm" data-exp="kml" title="Google Earth, Google My Maps">KML</button>
+      <button class="btn sm" data-exp="gpx" title="GPS-laitteet ja karttasovellukset">GPX</button>
+      <button class="btn sm" data-exp="geojson" title="QGIS ja muut paikkatieto-ohjelmat">GeoJSON</button>
+    </span>
+  </div>
+  <div id="results" tabindex="-1"></div>
+</section>
+
+<section id="right" aria-label="Kartta ja kylän tiedot">
+  <div id="map"></div>
+  <div id="card" hidden></div>
+</section>
+</main>
+
+<nav id="tabs"><button data-tab="haku" class="act">Haku</button><button data-tab="kartta">Kartta</button><button data-tab="kyla">Kylä</button></nav>
+
+<footer>Aineisto: <a href="https://doi.org/10.5281/zenodo.10408884" target="_blank" rel="noopener">Kansallisarkisto, Suomen kylät 1540–1940</a> (versio 1, 20.12.2023), CC BY 4.0 · Nimet: Maanmittauslaitos 2023, CC BY 4.0 · Ohjelman versio 1.0 · Lisätietoja Ohje-sivulla</footer>
+
+<div id="toast" role="status"></div>
+
+<dialog id="helpDlg">
+  <div class="dlghead"><h2>Ohje</h2><button class="hbtn" id="helpClose">Sulje</button></div>
+  <div class="dlgbody">
+    <p>Ohjelmalla voit hakea Suomen vanhoja maakirjakyliä Kansallisarkiston aineistosta <i>Suomen kylät 1540–1940</i>. Aineistossa on 14 172 kylää. Tiedot ovat Kansallisarkiston mukaan vielä keskeneräisiä: pitäjätietoja ei ole kaikilta osin tarkistettu, ja aineistoa päivitetään.</p>
+
+    <h3>Pikahaku</h3>
+    <p>Kirjoita yläreunan hakukenttään kylän nimi. Tulokset päivittyvät kirjoittaessa. Haku kohdistuu kylän nykyiseen nimeen, vanhaan kirjoitusasuun ja muihin nimimuotoihin. Jos osuma on muussa kuin nykyisessä nimessä, tuloksessa näkyy vihreällä, mikä nimimuoto osui.</p>
+    <ul>
+      <li>Kun kirjoitat pitäjän nimen, ehdotuslistasta voit rajata haun kyseisen pitäjän kyliin.</li>
+      <li>Rekisteritunnus (esim. <i>833-456</i>) haetaan suoraan.</li>
+      <li>Koordinaatit (esim. <i>60.6132, 21.6596</i>): paina Enter, niin näet lähimmät kylät.</li>
+    </ul>
+
+    <h3>Tarkennukset</h3>
+    <table>
+      <tr><th>Osio</th><th>Mitä tekee</th></tr>
+      <tr><td>Nimihaun tapa</td><td>Sisältää / alkaa / täsmälleen / sumea. Sumea haku sallii vanhoille lähteille tyypilliset kirjoitusvaihtelut (w–v, c–k, q–k, ph–f, th–t, z–s, b–p, d–t, g–k, å–o, kaksoiskirjaimet, -inen/-is, -lax/-la) ja 1–2 kirjaimen eron. Jokerimerkit * ja ? toimivat kaikissa tavoissa.</td></tr>
+      <tr><td>Pitäjä ja ajankohta</td><td>Kylät, jotka ovat kuuluneet pitäjään tai kuntaan valittuna ajankohtana (1550, 1600 … 2000, 2023) tai milloin tahansa.</td></tr>
+      <tr><td>Aika ja tila</td><td>Kylä olemassa tiettynä vuonna tai aikavälillä. Pelkät edelleen olemassa olevat, lakanneet tai luovutetun alueen (1944) kylät.</td></tr>
+      <tr><td>Tunnukset ja viitteet</td><td>Rekisteritunnus, rekisterikunta ja -kylä (2013), viite teokseen <i>Suomen asutus 1560-luvulla</i> (sivu,rivi) ja aineiston tunniste.</td></tr>
+      <tr><td>Kartta ja etäisyys</td><td>Kylät valitun pisteen ympäriltä (1–300 km) tai vain kartan näkyvältä alueelta.</td></tr>
+      <tr><td>Koordinaattihaku</td><td>Liitä koordinaatit missä tahansa tuetussa muodossa, niin näet lähimmät kylät etäisyyksineen.</td></tr>
+      <tr><td>Lisäsuodattimet</td><td>Vain kylät, joilla on tietty linkki, viite tai koordinaatit.</td></tr>
+    </table>
+    <p>Kaikki ehdot ovat voimassa yhtä aikaa. Voimassa olevat ehdot näkyvät tulosluettelon yläpuolella. Ehdon voi poistaa ×-painikkeella. Haku tallentuu selaimen osoiteriville, joten hakutuloksen voi tallentaa kirjanmerkiksi.</p>
+
+    <h3>Kylän tietokortti</h3>
+    <p>Napsauta kylää luettelossa tai kartalla. Tietokortissa näkyvät nimimuodot, pitäjät ja kunnat eri aikoina, tunnisteet, linkit, koordinaatit ja lähimmät kylät.</p>
+    <ul>
+      <li><b>Epävarma</b> (oranssi merkintä) tarkoittaa, että aineistossa on kysymysmerkki (?, ?? tai ???).</li>
+      <li><b>Varhaisin maininta</b> on toistaiseksi varhaisin lähde, jossa kylä on tullut vastaan. Se ei ole kylän perustamisvuosi.</li>
+      <li><b>Lakkaaminen</b> on arvio. Jos kylä on yhä olemassa, tila on "Edelleen kylä".</li>
+      <li>Jos varhaisin maininta on 2023, kylästä ei ole vielä kirjattu vanhaa lähdemainintaa (tieto on nykyisestä nimistöstä).</li>
+    </ul>
+
+    <h3>Linkit</h3>
+    <p>Kaikki linkit avautuvat uuteen välilehteen, joten hakutulos säilyy. <b>Avaa kaikki</b> -painike avaa aineiston linkit. Selaimet sallivat yleensä vain yhden uuden välilehden napsautusta kohden. Silloin painikkeeseen vaihtuu teksti <i>Avaa seuraava</i>, ja jokainen napsautus avaa seuraavan linkin. Kaikki aukeavat kerralla, jos sallit ponnahdusikkunat tälle sivulle (osoiterivin oikean reunan kuvake → <i>Salli aina</i>), mikäli selain tarjoaa valinnan tiedostosta avatulle sivulle.</p>
+
+    <h3>Koordinaatit</h3>
+    <table>
+      <tr><th>Muoto</th><th>Käyttö</th></tr>
+      <tr><td>ETRS-TM35FIN (EPSG:3067), N, E</td><td>Maanmittauslaitoksen Karttapaikka ja Paikkatietoikkuna. Kansallisarkiston kyläaineiston alkuperäiset koordinaatit ovat tässä muodossa.</td></tr>
+      <tr><td>ETRS-TM35FIN, x, y</td><td>QGIS ja muut paikkatieto-ohjelmat (itä ensin)</td></tr>
+      <tr><td>WGS84 desimaaliasteet</td><td>Google Maps, OpenStreetMap, puhelimet, Wikidata</td></tr>
+      <tr><td>WGS84 asteet ja minuutit</td><td>GPS-laitteet, geokätköily</td></tr>
+      <tr><td>WGS84 asteet, minuutit, sekunnit</td><td>Wikipedia, paperikartat</td></tr>
+      <tr><td>ETRS-GKn (EPSG:3873–3885)</td><td>Kuntien kartat (kaista valitaan kylän pituusasteen mukaan)</td></tr>
+      <tr><td>KKJ yhtenäiskoordinaatisto (YKJ, EPSG:2393), P, I</td><td>Vanhat peruskartat ja ennen vuotta 2005 tehdyt aineistot</td></tr>
+      <tr><td>Yleislehtijako (esim. 1042 11)</td><td>Vanhan peruskartan 1:20 000 karttalehden numero. Samalla numeroinnilla löytyvät pitäjänkartaston kartat Astiasta.</td></tr>
+    </table>
+    <p>Kopioi-painike kopioi arvon leikepöydälle. ETRS89-pohjaiset koordinaatit ja WGS84 eroavat Suomessa alle metrin. KKJ-muunnos on tehty seitsemän parametrin muunnoksella (tarkkuus noin 1–2 m). Aineiston koordinaatit kuvaavat kylän likimääräistä paikkaa, eivät rajoja.</p>
+    <p><b>Huom:</b> Kansallisarkiston palveluissa (esim. Astia) ei toistaiseksi voi hakea aineistoja koordinaateilla. Kansallisarkiston kuvauksen mukaan kyliin linkitetyt aineistot tulevat paikkatiedon avulla haettaviksi vasta, kun tarvittava infrastruktuuri on valmis. Tietokortin luku <i>Kansallisarkiston aineistoja</i> kertoo, kuinka monta aineistoa kylään on jo linkitetty.</p>
+
+    <h3>Kylän tietojen käyttö arkistotutkimuksessa</h3>
+    <p>Tietokortin tiedoista on apua, kun etsit kylää Kansallisarkiston aineistoista. Kansallisarkiston palveluissa (esim. Astia) ei toistaiseksi voi hakea koordinaateilla, mutta näillä tiedoilla oikeat aineistot löytyvät nopeammin:</p>
+    <table>
+      <tr><th>Tieto</th><th>Miten sitä käytetään</th></tr>
+      <tr><td>Pitäjänkartasto</td><td>Tietokortin <b>Avaa kartta</b> -painike avaa kylän karttalehden pitäjänkartan suoraan Astian kuvankatseluun. Pitäjänkartat ovat mittakaavassa 1:20 000, ja ne on laadittu pääosin vuosina 1840–1865. Ne on numeroitu yleislehtijaon mukaan (esim. 1042 11). Samalta lehdeltä voi olla useamman pitäjän karttoja, ja kylän pitäjän kartta on merkitty. Jos kylä on lehden reunalla, katso myös naapurilehdet. Luettelo (4 927 karttaa) on haettu Astiasta 26.11.2026.</td></tr>
+      <tr><td>Vanha kirjoitusasu ja muut nimimuodot</td><td>Käytä niitä hakusanoina Astiassa ja Kansallisarkiston tuomiokirjahaussa. Vanhoissa asiakirjoissa nimi on usein ruotsalaisessa tai vaihtelevassa asussa (esim. Uskoinen: Uskois, Uskais, Uskeis).</td></tr>
+      <tr><td>Pitäjä ja kunta eri aikoina</td><td>Kertoo, minkä pitäjän tai kappelin arkistoista ja luetteloista kylää kannattaa etsiä kunakin aikana (kirkonkirjat, henki- ja maakirjat, tuomiokunnan tuomiokirjat). Suomen asutuksen yleisluettelo (SAY, Astiassa) on järjestetty pitäjittäin, kylittäin ja taloittain.</td></tr>
+      <tr><td>Varhaisin maininta ja lakkaaminen</td><td>Rajaavat, minkä ajan lähteitä kannattaa katsoa. SAY:ssä vuosien 1539–1633 tiedot ovat voudintilien veroluetteloista (pääasiassa maakirjoista), vuosien 1634–1713 läänintileistä ja noin 1722–1809 henkikirjoista. Lakanneen kylän myöhemmät vaiheet löytyvät yleensä naapurikylän tai sen kylän alta, johon se yhdistettiin.</td></tr>
+      <tr><td>Suomen asutus 1560-luvulla -viite</td><td>Sivu ja rivi Anneli Mäkelä-Alitalon kyläluetteloissa (1973). Kyläluettelot auttavat selvittämään, mihin hallintopitäjään kylä kuului veroluetteloiden aikaan, eli mistä kylää etsitään voudintileistä ja SAY:stä. Teoksen kartasto on vapaasti luettavissa Doriassa.</td></tr>
+      <tr><td>Rekisteritunnus, rekisterikunta ja -kylä</td><td>Kiinteistötunnuksen alkuosa (kunnan ja kylän numero) ja niiden nimet. Hyödyllisiä maanmittausaineistoissa: Maanmittaushallituksen uudistusarkisto (esim. isojakokartat ja jakokirjat) on järjestetty lääneittäin, kunnittain, kylittäin ja toimituksittain. Astiassa hakusana on <i>maanmittaushallituksen uudistusarkisto*</i>.</td></tr>
+      <tr><td>Kansallisarkiston aineistoja</td><td>Kylään jo linkitettyjen Kansallisarkiston aineistojen määrä. Kansallisarkiston mukaan aineistot tulevat paikkatiedon avulla haettaviksi, kun tarvittava infrastruktuuri on valmis. Toistaiseksi luku kertoo vain, että aineistoja on.</td></tr>
+      <tr><td>Aineiston tunniste</td><td>Kansallisarkiston tilapäinen tunnus. Mainitse se, jos lähetät aineistosta palautetta (paikkatieto@kansallisarkisto.fi).</td></tr>
+    </table>
+
+    <h3>Tallentaminen</h3>
+    <p>Hakutuloksen voi tallentaa CSV-tiedostona (avautuu Exceliin), KML-tiedostona (Google Earth), GPX-tiedostona (GPS-laitteet) tai GeoJSON-tiedostona (QGIS). Yksittäisen kylän voi tallentaa tietokortista.</p>
+    <p><b>Karttakuva:</b> kartan vasemman yläkulman <b>Tallenna karttakuva</b> -painike tallentaa kartan näkyvän alueen PNG-kuvana. Kuvassa ovat taustakartta, kylät, valittu kylä, etäisyysrajaus sekä alareunassa hakuehdot, värien selitys, mittakaava ja lähdetiedot. Käytä tätä painiketta selaimen oman kuvankaappauksen sijaan, sillä selaimen tallentamissa kuvissa läpinäkyvät alueet voivat näkyä Windowsissa mustina.</p>
+
+    <h3>Kartta</h3>
+    <p>Taustakartta tarvitsee verkkoyhteyden, mutta haku toimii ilmankin. Taustakartan (maastokartta, katukartta, ilmakuva, Senaatin kartasto) voi vaihtaa kartan oikean yläkulman valinnasta. Pisteiden värit: <span class="dot lg-ole"></span>edelleen kylä, <span class="dot lg-lak"></span>lakannut, <span class="dot lg-luo"></span>lakannut 1944 (luovutettu alue). <b>Valitse piste kartalta</b> -painikkeella saat lähimmät kylät napsauttamastasi kohdasta.</p>
+
+    <h3>Senaatin kartasto</h3>
+    <p>Karttapohja <b>Senaatin kartasto – venäläinen topografikartta 1870–1944</b> näyttää Venäjän armeijan topografisten joukkojen kartoituksen tulokset Etelä-Suomesta. Senaatin kartastot ovat tämän kartoituksen 1:21 000 -karttojen käsin väritettyjä valokuvajäljennöksiä Kansallisarkistossa. Väritettyä versiota ei ole saatavilla avoimena karttapalveluna, joten ohjelmassa näkyvät Maanmittauslaitoksen georeferoimat mustavalkoiset kartat (avoin aineisto, CSC:n Paituli-palvelu):</p>
+    <ul>
+      <li><b>1:21 000</b> (1871–1919): tarkin kartta, mutta Paitulissa vain Helsingin, Nurmijärven ja Vihdin seudulta</li>
+      <li><b>1:42 000</b> (painettu versio, 1870–1944): Lounais-Suomi, Uusimaa, Kymenlaakso, Häme ja Satakunta, pohjoisessa noin 62. leveyspiirille ja idässä Lappeenrannan seudulle. Luovutettua Karjalaa ei ole mukana.</li>
+    </ul>
+    <p>Tarkempi kartta näytetään siellä, missä sitä on. Muualla näkyy nykyinen maastokartta. Kartat piirtyvät vasta, kun karttaa lähennetään noin mittakaavaan 1:140 000 tai tarkemmaksi. Kartan kulmassa on silloin <b>Lähennä</b>-painike, ja kylää valittaessa kartta lähennetään automaattisesti. Paikannimet ovat kartoissa venäjäksi (esim. Аля-Лепсямя = Ala-Lepsämä). Kansallisarkiston käsin väritetyt Senaatin kartaston lehdet ovat Astiassa.</p>
+
+    <h3>Lähteet ja lisenssit</h3>
+    <ul>
+      <li>Kansallisarkisto: <i>Suomen kylät 1540–1940</i>, versio 1 (20.12.2023). CC BY 4.0. <a href="https://doi.org/10.5281/zenodo.10408884" target="_blank" rel="noopener">doi.org/10.5281/zenodo.10408884</a>. Palaute aineistosta: paikkatieto@kansallisarkisto.fi</li>
+      <li>Nimet: Maanmittauslaitoksen nimistöaineisto 2023_01, CC BY 4.0</li>
+      <li>Taustakartat: Esri (maasto-, katu- ja ilmakuvakartta), OpenTopoMap (CC BY-SA), © OpenStreetMapin tekijät (ODbL); venäläiset topografiset kartat 1:21 000 ja 1:42 000 © Maanmittauslaitos, jakelu CSC Paituli (CC BY 4.0)</li>
+      <li>Karttakirjasto: Leaflet 1.9.4 (BSD 2-Clause)</li>
+    </ul>
+    <p class="sub" id="buildInfo"></p>
+
+    <h3>Ohjelman tekijä</h3>
+    <p>Jari Aro<br>jari.t.aro (at) gmail.com<br>Versio 1.0</p>
+  </div>
+</dialog>
+
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>/*__LEAFLET_JS__*/</script>
+<script>
+'use strict';
+/* ======================================================================
+   Koordinaattimuunnokset (JHS 154 / JHS 197)
+   ====================================================================== */
+const D2R = Math.PI / 180;
+const ELL = { GRS80: { a: 6378137, f: 1 / 298.257222101 }, INTL: { a: 6378388, f: 1 / 297 } };
+function tmSetup(ell) {
+  const { a, f } = ell, n = f / (2 - f);
+  return {
+    A1: a / (1 + n) * (1 + n * n / 4 + n ** 4 / 64),
+    e: Math.sqrt(2 * f - f * f),
+    hf: [n / 2 - 2 / 3 * n ** 2 + 5 / 16 * n ** 3 + 41 / 180 * n ** 4,
+         13 / 48 * n ** 2 - 3 / 5 * n ** 3 + 557 / 1440 * n ** 4,
+         61 / 240 * n ** 3 - 103 / 140 * n ** 4,
+         49561 / 161280 * n ** 4],
+    hi: [n / 2 - 2 / 3 * n ** 2 + 37 / 96 * n ** 3 - 1 / 360 * n ** 4,
+         1 / 48 * n ** 2 + 1 / 15 * n ** 3 - 437 / 1440 * n ** 4,
+         17 / 480 * n ** 3 - 37 / 840 * n ** 4,
+         4397 / 161280 * n ** 4]
+  };
+}
+const TMC = { GRS80: tmSetup(ELL.GRS80), INTL: tmSetup(ELL.INTL) };
+const PROJ = {
+  tm35: { ell: 'GRS80', lon0: 27, k0: 0.9996, fe: 500000 },
+  ykj: { ell: 'INTL', lon0: 27, k0: 1, fe: 3500000 },
+  gk: z => ({ ell: 'GRS80', lon0: z, k0: 1, fe: z * 1e6 + 500000 }),
+  kkj: z => ({ ell: 'INTL', lon0: 18 + 3 * z, k0: 1, fe: z * 1e6 + 500000 })   // KKJ-peruskoordinaatiston kaistat 0–5
+};
+function tmFwd(lat, lon, p) {
+  const c = TMC[p.ell], phi = lat * D2R, l = (lon - p.lon0) * D2R;
+  const Q = Math.asinh(Math.tan(phi)) - c.e * Math.atanh(c.e * Math.sin(phi));
+  const beta = Math.atan(Math.sinh(Q));
+  const etap = Math.atanh(Math.cos(beta) * Math.sin(l));
+  const zetap = Math.asin(Math.sin(beta) * Math.cosh(etap));
+  let zeta = zetap, eta = etap;
+  for (let i = 0; i < 4; i++) {
+    const k = 2 * (i + 1);
+    zeta += c.hf[i] * Math.sin(k * zetap) * Math.cosh(k * etap);
+    eta += c.hf[i] * Math.cos(k * zetap) * Math.sinh(k * etap);
+  }
+  return [c.A1 * eta * p.k0 + p.fe, c.A1 * zeta * p.k0];   // [E, N]
+}
+function tmInv(E, N, p) {
+  const c = TMC[p.ell];
+  const zeta = N / (c.A1 * p.k0), eta = (E - p.fe) / (c.A1 * p.k0);
+  let zp = zeta, ep = eta;
+  for (let i = 0; i < 4; i++) {
+    const k = 2 * (i + 1);
+    zp -= c.hi[i] * Math.sin(k * zeta) * Math.cosh(k * eta);
+    ep -= c.hi[i] * Math.cos(k * zeta) * Math.sinh(k * eta);
+  }
+  const beta = Math.asin(Math.sin(zp) / Math.cosh(ep));
+  const l = Math.asin(Math.tanh(ep) / Math.cos(beta));
+  const Q = Math.asinh(Math.tan(beta));
+  let Qp = Q + c.e * Math.atanh(c.e * Math.tanh(Q));
+  for (let i = 0; i < 6; i++) Qp = Q + c.e * Math.atanh(c.e * Math.tanh(Qp));
+  return [Math.atan(Math.sinh(Qp)) / D2R, p.lon0 + l / D2R];  // [lat, lon]
+}
+function geo2ecef(lat, lon, ell) {
+  const { a, f } = ELL[ell], e2 = 2 * f - f * f, phi = lat * D2R, lam = lon * D2R;
+  const N = a / Math.sqrt(1 - e2 * Math.sin(phi) ** 2);
+  return [N * Math.cos(phi) * Math.cos(lam), N * Math.cos(phi) * Math.sin(lam), N * (1 - e2) * Math.sin(phi)];
+}
+function ecef2geo(X, Y, Z, ell) {
+  const { a, f } = ELL[ell], e2 = 2 * f - f * f, p = Math.hypot(X, Y);
+  let phi = Math.atan2(Z, p * (1 - e2));
+  for (let i = 0; i < 8; i++) {
+    const N = a / Math.sqrt(1 - e2 * Math.sin(phi) ** 2);
+    const h = p / Math.cos(phi) - N;
+    phi = Math.atan2(Z, p * (1 - e2 * N / (N + h)));
+  }
+  return [phi / D2R, Math.atan2(Y, X) / D2R];
+}
+// KKJ -> EUREF-FIN (EPSG:10098 "KKJ to EUREF-FIN (2)"), coordinate frame -muunnos
+const HELM = { t: [-96.062, -82.428, -121.753], r: [-4.801, -0.345, 1.376].map(s => s / 3600 * D2R), s: 1.496e-6 };
+function helmertKKJtoETRS([x, y, z]) {
+  const [rx, ry, rz] = HELM.r, m = 1 + HELM.s, t = HELM.t;
+  return [t[0] + m * (x + rz * y - ry * z), t[1] + m * (-rz * x + y + rx * z), t[2] + m * (ry * x - rx * y + z)];
+}
+function helmertETRStoKKJ([X, Y, Z]) {
+  const [rx, ry, rz] = HELM.r, m = 1 + HELM.s, t = HELM.t;
+  const x = (X - t[0]) / m, y = (Y - t[1]) / m, z = (Z - t[2]) / m;
+  // käänteinen kiertomatriisi = transpoosi (pienet kulmat)
+  return [x - rz * y + ry * z, rz * x + y - rx * z, -ry * x + rx * y + z];
+}
+const Koord = {
+  tm35ToWgs: (x, y) => tmInv(x, y, PROJ.tm35),
+  wgsToTm35: (lat, lon) => tmFwd(lat, lon, PROJ.tm35),
+  wgsToGK(lat, lon) { const z = Math.min(31, Math.max(19, Math.round(lon))); const [E, N] = tmFwd(lat, lon, PROJ.gk(z)); return { z, E, N, epsg: 3854 + z }; },
+  wgsToYKJ(lat, lon) {
+    const [kl, kn] = ecef2geo(...helmertETRStoKKJ(geo2ecef(lat, lon, 'GRS80')), 'INTL');
+    const [I, P] = tmFwd(kl, kn, PROJ.ykj); return { P, I };
+  },
+  ykjToWgs(P, I) {
+    const [kl, kn] = tmInv(I, P, PROJ.ykj);
+    return ecef2geo(...helmertKKJtoETRS(geo2ecef(kl, kn, 'INTL')), 'GRS80');
+  },
+  gkToWgs(E, N) { const z = Math.floor(E / 1e6); return tmInv(E, N, PROJ.gk(z)); },
+  // KKJ-yleislehtijako (vanha peruskarttalehtijako): lehdet ovat 10 km × 10 km -ruutuja KKJ:n kaistakoordinaatistossa.
+  // 1:100 000 -lehti (4 numeroa) = 40 km × 30 km, jaettu 12 peruskarttalehteen (01–12, sarakkeittain lounaasta),
+  // 1:10 000 -lehti = neljännes A (lounas), B (luode), C (kaakko), D (koillinen).
+  ylj(lat, lon) {
+    const [kl, kn] = ecef2geo(...helmertETRStoKKJ(geo2ecef(lat, lon, 'GRS80')), 'INTL');
+    const cl = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+    const z = cl(Math.floor((kn - 18) / 3 + 0.5), 0, 5);               // kaista pituuspiirin mukaan (rajat 19,5°, 22,5°, 25,5°, 28,5°)
+    const [E, N] = tmFwd(kl, kn, PROJ.kkj(z)), e = E - z * 1e6;
+    const C = cl(Math.floor((e - 420000) / 40000), 0, 3), n = N - 6620000, d2 = Math.floor(n / 120000), R = Math.floor((n - d2 * 120000) / 30000);
+    if (d2 < 0 || d2 > 9) return null;
+    const d3 = 1 + (C >= 2 ? 2 : 0) + (R >= 2 ? 1 : 0), d4 = 1 + (C % 2 ? 2 : 0) + (R % 2 ? 1 : 0);
+    const E0 = 420000 + C * 40000, N0 = 6620000 + d2 * 120000 + R * 30000;
+    let col = Math.floor((e - E0) / 10000); const edge = col < 0 || col > 3; col = cl(col, 0, 3);
+    const row = Math.floor((N - N0) / 10000), ss = col * 3 + row + 1;
+    const q = 'ABCD'[((e - E0 - col * 10000) >= 5000 ? 2 : 0) + ((N - N0 - row * 10000) >= 5000 ? 1 : 0)];
+    const l100 = `${z}${d2}${d3}${d4}`, l20 = String(ss).padStart(2, '0');
+    // Kaistan reunalla MML käyttää levennettyjä reunalehtiä (13–15); ne tarjotaan vaihtoehtona
+    return { l100, l20, q, sheet: `${l100} ${l20}`, code: `${l100}${l20}${q}`, edge, extSheet: edge ? `${l100} ${13 + row}` : null };
+  }
+};
+function fmtDDM(v, pos, neg) {
+  const h = v >= 0 ? pos : neg; v = Math.abs(v);
+  let d = Math.floor(v), m = (v - d) * 60;
+  if (+m.toFixed(3) >= 60) { d += 1; m = 0; }
+  return `${h} ${d}° ${m.toFixed(3).padStart(6, '0')}'`;
+}
+function fmtDMS(v, pos, neg) {
+  const h = v >= 0 ? pos : neg; v = Math.abs(v);
+  let d = Math.floor(v), mf = (v - d) * 60, m = Math.floor(mf), s = (mf - m) * 60;
+  if (+s.toFixed(1) >= 60) { s = 0; m += 1; } if (m >= 60) { m = 0; d += 1; }
+  return `${d}°${String(m).padStart(2, '0')}'${s.toFixed(1).padStart(4, '0')}"${h}`;
+}
+function coordFormats(x, y) {
+  const [lat, lon] = Koord.tm35ToWgs(x, y);
+  const gk = Koord.wgsToGK(lat, lon), ykj = Koord.wgsToYKJ(lat, lon), ylj = Koord.ylj(lat, lon);
+  const r = n => Math.round(n);
+  return [
+    { k: 'ETRS-TM35FIN (EPSG:3067), N, E', v: `${y}, ${x}`, u: 'Karttapaikka, Paikkatietoikkuna – aineiston alkuperäiset koordinaatit' },
+    { k: 'ETRS-TM35FIN, x, y (itä ensin)', v: `${x}, ${y}`, u: 'QGIS ja muut paikkatieto-ohjelmat' },
+    { k: 'WGS84 desimaaliasteet (EPSG:4326)', v: `${lat.toFixed(6)}, ${lon.toFixed(6)}`, u: 'Google Maps, OpenStreetMap, puhelimet' },
+    { k: 'WGS84 asteet ja minuutit', v: `${fmtDDM(lat, 'N', 'S')} ${fmtDDM(lon, 'E', 'W')}`, u: 'GPS-laitteet, geokätköily' },
+    { k: 'WGS84 asteet, minuutit, sekunnit', v: `${fmtDMS(lat, 'N', 'S')} ${fmtDMS(lon, 'E', 'W')}`, u: 'Wikipedia, paperikartat' },
+    { k: `ETRS-GK${gk.z} (EPSG:${gk.epsg}), N, E`, v: `${r(gk.N)}, ${r(gk.E)}`, u: 'Kuntien kartat' },
+    { k: 'KKJ yhtenäiskoordinaatisto (YKJ, EPSG:2393), P, I', v: `${r(ykj.P)}, ${r(ykj.I)}`, u: 'Vanhat peruskartat (ennen 2005)' }
+  ].concat(ylj ? [{ k: 'Yleislehtijako: vanha peruskarttalehti 1:20 000', v: ylj.sheet, u: `Pitäjänkartasto (Astia), vanhat peruskartat – 1:10 000 -lehti ${ylj.code}` }] : []);
+}
+// Koordinaattien tulkinta vapaasta tekstistä -> {x, y, txt} tai {err}
+function parseCoords(str) {
+  const s = String(str).trim();
+  if (!s) return null;
+  const nums = (s.match(/-?\d+(?:[.,]\d+)?/g) || []).map(t => parseFloat(t.replace(',', '.')));
+  const hasDeg = /[°º'’′"”″]/.test(s);
+  let lat, lon, txt;
+  if (nums.length === 2 && Math.abs(nums[0]) <= 180 && Math.abs(nums[1]) <= 180 && !hasDeg) {
+    [lat, lon] = nums;
+    if (lat < lon) [lat, lon] = [lon, lat];
+    txt = 'WGS84 desimaaliasteet';
+  } else if (nums.length === 2) {
+    let [a, b] = nums, N, E;
+    if (a >= 6.5e6 && a < 8e6) { N = a; E = b; } else if (b >= 6.5e6 && b < 8e6) { N = b; E = a; }
+    else return { err: 'Koordinaatteja ei tunnistettu. Pohjoiskoordinaatin pitää olla välillä 6 500 000–8 000 000.' };
+    if (E >= 3.0e6 && E < 4.0e6) { [lat, lon] = Koord.ykjToWgs(N, E); txt = 'KKJ yhtenäiskoordinaatisto (YKJ)'; }
+    else if (E >= 19e6 && E < 32e6) { [lat, lon] = Koord.gkToWgs(E, N); txt = `ETRS-GK${Math.floor(E / 1e6)}`; }
+    else if (E > 0 && E < 1.0e6) { return { x: Math.round(E), y: Math.round(N), txt: 'ETRS-TM35FIN', lat: Koord.tm35ToWgs(E, N)[0], lon: Koord.tm35ToWgs(E, N)[1] }; }
+    else return { err: 'Itäkoordinaattia ei tunnistettu (TM35FIN: alle 1 000 000, YKJ: 3 000 000–3 999 999, GK: kaistan numero alussa).' };
+  } else if (nums.length === 4) {
+    lat = nums[0] + nums[1] / 60; lon = nums[2] + nums[3] / 60; txt = 'WGS84 asteet ja minuutit';
+    if (lat < lon) [lat, lon] = [lon, lat];
+  } else if (nums.length === 6) {
+    lat = nums[0] + nums[1] / 60 + nums[2] / 3600; lon = nums[3] + nums[4] / 60 + nums[5] / 3600; txt = 'WGS84 asteet, minuutit, sekunnit';
+    if (lat < lon) [lat, lon] = [lon, lat];
+  } else return { err: 'Koordinaatteja ei tunnistettu. Anna kaksi lukua (esim. 60.6132, 21.6596) tai asteet ja minuutit.' };
+  if (!(lat > 58 && lat < 71.5 && lon > 18 && lon < 34)) return { err: 'Koordinaatit eivät osu Suomen tai luovutetun alueen kohdalle.' };
+  const [E, N] = Koord.wgsToTm35(lat, lon);
+  return { x: Math.round(E), y: Math.round(N), txt, lat, lon };
+}
+
+/* ======================================================================
+   Data
+   ====================================================================== */
+const RAW = JSON.parse(document.getElementById('data').textContent);
+const YEARS = [1550, 1600, 1650, 1700, 1750, 1800, 1850, 1900, 1950, 2000, 2023];
+const P = RAW.p;
+const coll = new Intl.Collator('fi', { sensitivity: 'base' });
+const VT = ['nykyinen nimi', 'vanha kirjoitusasu', 'muu nimimuoto', 'rekisterikylä 2013'];
+
+function fold(s) {
+  return s.toLowerCase().normalize('NFD')
+    .replace(/ä/g, 'ä').replace(/ö/g, 'ö').replace(/å/g, 'å')
+    .replace(/[̀-ͯ]/g, '').normalize('NFC');
+}
+function fuzzyKey(s) {
+  let t = fold(s).replace(/[^a-zåäöæøü]/g, '');
+  t = t.replace(/l[aä]x$/, 'la').replace(/inen$/, 'is').replace(/sch/g, 's').replace(/ch/g, 'k').replace(/ck/g, 'k')
+    .replace(/ph/g, 'f').replace(/qu/g, 'kv').replace(/q/g, 'k').replace(/w/g, 'v').replace(/x/g, 'ks').replace(/z/g, 's')
+    .replace(/c(?=[eiyäö])/g, 's').replace(/c/g, 'k').replace(/ij/g, 'i')
+    .replace(/å/g, 'o').replace(/[äæ]/g, 'a').replace(/[öø]/g, 'o').replace(/ü/g, 'y')
+    .replace(/b/g, 'p').replace(/d/g, 't').replace(/g/g, 'k').replace(/f/g, 'v')
+    .replace(/([^aeiouy])h/g, '$1').replace(/(.)\1+/g, '$1');
+  return t;
+}
+function lev(a, b, max) {
+  if (Math.abs(a.length - b.length) > max) return max + 1;
+  let prev = new Array(b.length + 1), cur = new Array(b.length + 1);
+  for (let j = 0; j <= b.length; j++) prev[j] = j;
+  for (let i = 1; i <= a.length; i++) {
+    cur[0] = i; let rowMin = i;
+    for (let j = 1; j <= b.length; j++) {
+      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      if (cur[j] < rowMin) rowMin = cur[j];
+    }
+    if (rowMin > max) return max + 1;
+    [prev, cur] = [cur, prev];
+  }
+  return prev[b.length];
+}
+
+const ROWS = RAW.r.map((a, i) => {
+  const [id, x, y, nimi, nimi2, muu, start, end, vi, rt, rki, rkyla, placeid, wd, yso, beb, her, df, a1560, maara] = a;
+  const v = vi.map(k => P[k]);
+  const r = { i, id, x, y, nimi, nimi2: nimi2 || nimi, muut: muu ? muu.split(';').map(s => s.trim()).filter(Boolean) : [],
+    start, end, v, rt, rkunta: P[rki], rkyla, placeid, wd, yso, beb, her, df, a1560, maara };
+  r.status = end === 9999 ? 'ole' : (end === 1944 ? 'luo' : 'lak');
+  r.vc = v.map(s => s.replace(/\?+/g, '').replace(/\s+/g, ' ').trim());
+  r.vu = v.map(s => s.includes('?'));
+  r.vl = r.vc.map(s => s.toLowerCase());
+  r.vparts = r.vl.map(s => s ? s.split(',').map(t => t.trim()) : []);
+  if (x != null) { const [lat, lon] = Koord.tm35ToWgs(x, y); r.lat = lat; r.lon = lon; }
+  const seen = new Set(), vars = [];
+  const add = (s, t) => { if (!s) return; const f = fold(s); if (seen.has(f + t)) return; seen.add(f + t); vars.push({ s, t, f, k: fuzzyKey(s) }); };
+  add(nimi, 0); add(r.nimi2, 1); r.muut.forEach(m => add(m, 2)); add(rkyla, 3);
+  r.vars = vars;
+  r.oldParish = r.vc.slice(0, 8).find(s => s) || r.vc.find(s => s) || '';
+  return r;
+});
+const BY_ID = new Map(ROWS.map(r => [r.id, r]));
+const N_ALL = ROWS.length;
+
+// Pitäjäluettelo ehdotuksia varten
+const PARISHES = (() => {
+  const m = new Map();
+  ROWS.forEach(r => { new Set(r.vc.filter(Boolean)).forEach(p => m.set(p, (m.get(p) || 0) + 1)); });
+  return [...m.entries()].map(([name, n]) => ({ name, n, l: name.toLowerCase(), parts: name.toLowerCase().split(',').map(t => t.trim()) }))
+    .sort((a, b) => coll.compare(a.name, b.name));
+})();
+
+/* ======================================================================
+   Apufunktiot
+   ====================================================================== */
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const fmtInt = n => n.toLocaleString('fi-FI');
+const fmtKm = m => m < 1000 ? `${Math.round(m)} m` : `${(m / 1000).toLocaleString('fi-FI', { maximumFractionDigits: 1 })} km`;
+function debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 1800); }
+async function copyText(txt) {
+  try { await navigator.clipboard.writeText(txt); }
+  catch (e) { const ta = document.createElement('textarea'); ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (e2) {} ta.remove(); }
+  toast('Kopioitu: ' + txt);
+}
+function wildRegex(q) {
+  return new RegExp('^' + q.split('').map(c => c === '*' ? '.*' : c === '?' ? '.' : c.replace(/[.+^${}()|[\]\\]/g, '\\$&')).join('') + '$');
+}
+const statusText = r => r.status === 'ole' ? 'Edelleen kylä' : r.status === 'luo' ? 'Lakannut 1944 (luovutettu alue)' : `Lakannut (arvio ${r.end})`;
+const span = r => r.start === 2023 ? '2023–' : `${r.start ?? '?'}–${r.end === 9999 ? '' : r.end}`;
+
+/* ======================================================================
+   Tila ja suodatus
+   ====================================================================== */
+const S = { parishExact: false, point: null, selected: null, shown: 0, results: [], lastAuto: true };
+YEARS.forEach((y, i) => $('#period').insertAdjacentHTML('beforeend', `<option value="${i}">${y}${y === 2023 ? ' (nykyinen kunta)' : ''}</option>`));
+
+function readState() {
+  const q = $('#q').value.trim();
+  const has = $$('[data-has]').filter(c => c.checked).map(c => c.dataset.has);
+  return {
+    q, mode: $('input[name=mode]:checked').value, useRkyla: $('#useRkyla').checked,
+    parish: $('#parish').value.trim(), parishExact: S.parishExact, period: +$('#period').value, unc: $('#unc').checked,
+    y1: $('#y1').value ? +$('#y1').value : null, y2: $('#y2').value ? +$('#y2').value : null, status: $('#status').value,
+    rt: $('#rt').value.trim(), rk: $('#rk').value.trim(), ry: $('#ry').value.trim(), a1560: $('#a1560').value.trim(), idq: $('#idq').value.trim(),
+    inView: $('#inView').checked, radius: +$('#radius').value, has, sort: $('#sort').value
+  };
+}
+const isRt = q => /^\d{1,3}-\d{0,4}$/.test(q);
+const looksCoord = q => /\d/.test(q) && (q.match(/\d+(?:[.,]\d+)?/g) || []).length >= 2;
+
+function nameMatcher(st) {
+  let q = st.q;
+  if (!q || isRt(q) || looksCoord(q) || /^\d+$/.test(q)) return null;
+  const useT3 = st.useRkyla;
+  const vars = r => useT3 ? r.vars : r.vars.filter(v => v.t !== 3);
+  if (/[*?]/.test(q)) {
+    const re = wildRegex(fold(q));
+    return r => { for (const v of vars(r)) if (re.test(v.f)) return { score: v.t === 0 ? 0 : 1, v }; return null; };
+  }
+  const fq = fold(q);
+  if (st.mode === 'tark') return r => { for (const v of vars(r)) if (v.f === fq) return { score: v.t === 0 ? 0 : 1, v }; return null; };
+  if (st.mode === 'alk') return r => { let best = null; for (const v of vars(r)) if (v.f.startsWith(fq)) { const sc = (v.f === fq ? 0 : 2) + (v.t === 0 ? 0 : 1); if (!best || sc < best.score) best = { score: sc, v }; } return best; };
+  if (st.mode === 'sum') {
+    const kq = fuzzyKey(q), L = kq.length, maxD = L <= 3 ? 0 : L <= 6 ? 1 : 2;
+    return r => {
+      let best = null;
+      for (const v of vars(r)) {
+        let sc;
+        if (v.f === fq) sc = v.t === 0 ? 0 : 1;
+        else if (v.k === kq) sc = 2;
+        else if (L >= 4 && v.k.startsWith(kq)) sc = 3;
+        else { if (!maxD || v.k[0] !== kq[0]) continue; const d = lev(v.k, kq, maxD); if (d > maxD) continue; sc = 3 + d; }
+        if (!best || sc < best.score) best = { score: sc, v };
+      }
+      return best;
+    };
+  }
+  return r => {
+    let best = null;
+    for (const v of vars(r)) {
+      const p = v.f.indexOf(fq); if (p < 0) continue;
+      const sc = (v.f === fq ? 0 : p === 0 ? 2 : 4) + (v.t === 0 ? 0 : 1);
+      if (!best || sc < best.score) best = { score: sc, v };
+    }
+    return best;
+  };
+}
+function parishMatch(r, st, pl) {
+  const idxs = st.period >= 0 ? [st.period] : YEARS.map((_, i) => i);
+  for (const i of idxs) {
+    if (!r.vl[i] || (!st.unc && r.vu[i])) continue;
+    if (st.parishExact) { if (r.vl[i] === pl || r.vparts[i][0] === pl) return true; }
+    else if (r.vl[i].startsWith(pl) || r.vparts[i].some(p => p.startsWith(pl))) return true;
+  }
+  return false;
+}
+function compute(opts = {}) {
+  const st = readState();
+  const nm = nameMatcher(st);
+  const rtq = st.rt || (isRt(st.q) ? st.q : '');
+  const pl = st.parish.toLowerCase();
+  const rkl = fold(st.rk), ryl = fold(st.ry);
+  const bounds = st.inView && MAP ? MAP.getBounds() : null;
+  const pt = S.point, rad = st.radius * 1000;
+  const res = [];
+  for (const r of ROWS) {
+    if (st.status) {
+      if (st.status === 'nyk') { if (r.start !== 2023) continue; }
+      else if (r.status !== st.status) continue;
+    }
+    if (st.y1 != null || st.y2 != null) {
+      const a = st.y1 ?? st.y2, b = st.y2 ?? st.y1;
+      if (r.start == null || r.start > Math.max(a, b) || r.end < Math.min(a, b)) continue;
+    }
+    if (pl && !parishMatch(r, st, pl)) continue;
+    if (rtq && !r.rt.startsWith(rtq)) continue;
+    if (rkl && !fold(r.rkunta).startsWith(rkl)) continue;
+    if (ryl && !fold(r.rkyla).includes(ryl)) continue;
+    if (st.a1560 && !r.a1560.startsWith(st.a1560)) continue;
+    if (st.idq && String(r.id) !== st.idq) continue;
+    if (st.has.length) {
+      let ok = true;
+      for (const h of st.has) {
+        if (h === 'coords' ? r.x == null : h === 'nocoords' ? r.x != null : h === 'maara' ? !(r.maara > 0) : !r[h]) { ok = false; break; }
+      }
+      if (!ok) continue;
+    }
+    if (bounds && (r.x == null || !bounds.contains([r.lat, r.lon]))) continue;
+    if (pt) {
+      if (r.x == null) continue;
+      const d = Math.hypot(r.x - pt.x, r.y - pt.y);
+      if (d > rad) continue;
+      r._d = d;
+    } else r._d = null;
+    if (nm) { const m = nm(r); if (!m) continue; r._sc = m.score; r._hit = m.v; }
+    else { r._sc = 0; r._hit = null; }
+    res.push(r);
+  }
+  sortResults(res, st);
+  S.results = res;
+  renderChips(st);
+  renderResults(true);
+  updateSectionBadges(st);
+  if (MAP) {
+    PTS.setPoints(res);
+    if (!opts.fromMap && !st.inView && opts.fit !== false) fitResults(res);
+  }
+  writeHash(st);
+}
+function pitajaCol(r, st) {
+  if (st.period >= 0) return r.v[st.period] ? r.vc[st.period] + (r.vu[st.period] ? ' ?' : '') : '';
+  return r.oldParish;
+}
+function sortResults(res, st) {
+  let key = st.sort;
+  if (key === 'auto') key = st.q && nameMatcher(st) ? 'osuvuus' : (S.point ? 'etaisyys' : 'nimi');
+  if (key === 'etaisyys' && !S.point) key = 'nimi';
+  const byName = (a, b) => coll.compare(a.nimi, b.nimi) || a.id - b.id;
+  const cmp = {
+    osuvuus: (a, b) => a._sc - b._sc || byName(a, b),
+    nimi: byName,
+    pitaja: (a, b) => coll.compare(pitajaCol(a, st) || 'ööö', pitajaCol(b, st) || 'ööö') || byName(a, b),
+    kunta: (a, b) => coll.compare(a.vc[10] || 'ööö', b.vc[10] || 'ööö') || byName(a, b),
+    alku: (a, b) => (a.start ?? 9999) - (b.start ?? 9999) || byName(a, b),
+    loppu: (a, b) => (a.end ?? 9999) - (b.end ?? 9999) || byName(a, b),
+    etaisyys: (a, b) => a._d - b._d
+  }[key];
+  res.sort(cmp);
+  S.sortKey = key;
+}
+
+/* ---------------- Tulosluettelo ---------------- */
+const PAGE = 200;
+function renderResults(reset) {
+  const st = readState(), res = S.results, box = $('#results');
+  $('#count').textContent = res.length === N_ALL ? `${fmtInt(N_ALL)} kylää` : `${fmtInt(res.length)} kylää (${fmtInt(N_ALL)}:sta)`;
+  if (reset) {
+    S.shown = 0;
+    const dcol = S.point ? '<th data-sort="etaisyys">Etäisyys</th>' : '';
+    const ptitle = st.period >= 0 ? `Pitäjä ${YEARS[st.period]}` : 'Pitäjä (vanhin tieto)';
+    box.innerHTML = res.length ? `<table class="res"><thead><tr><th data-sort="nimi">Kylä</th><th data-sort="pitaja">${ptitle}</th><th data-sort="kunta">Kunta 2023</th><th data-sort="alku">Aika</th>${dcol}</tr></thead><tbody></tbody></table><div class="more" id="more"></div>`
+      : '<div class="nores">Ei osumia. Kokeile sumeaa hakua (Nimihaun tapa), lyhyempää hakusanaa tai poista joitakin ehtoja.</div>';
+    const th = box.querySelector(`th[data-sort="${S.sortKey === 'osuvuus' ? 'nimi' : S.sortKey}"]`);
+    if (th && S.sortKey !== 'osuvuus') th.classList.add('sorted');
+    box.scrollTop = 0;
+  }
+  const tb = box.querySelector('tbody'); if (!tb) return;
+  const end = Math.min(res.length, S.shown + PAGE);
+  let html = '';
+  for (let k = S.shown; k < end; k++) {
+    const r = res[k];
+    const others = [...new Set([r.nimi2, ...r.muut].filter(s => s && s !== r.nimi))].join(' · ');
+    const hit = r._hit && r._hit.t !== 0 ? `<div class="hit">osui: ${esc(r._hit.s)} (${VT[r._hit.t]})</div>` : '';
+    const pc = pitajaCol(r, st);
+    const kunta = r.vc[10] || (r.status === 'luo' ? '<span class="sub">luovutettu alue</span>' : '<span class="sub">–</span>');
+    html += `<tr data-i="${r.i}" tabindex="0" class="st-${r.status}${S.selected === r ? ' sel' : ''}"><td><span class="dot"></span><b>${esc(r.nimi)}</b>${others ? `<div class="sub">${esc(others.length > 70 ? others.slice(0, 68) + '…' : others)}</div>` : ''}${hit}</td><td>${esc(pc)}</td><td>${r.vc[10] ? esc(r.vc[10]) : kunta}</td><td title="Varhaisin maininta – arvioitu lakkaaminen">${span(r)}</td>${S.point ? `<td>${fmtKm(r._d)}</td>` : ''}</tr>`;
+  }
+  tb.insertAdjacentHTML('beforeend', html);
+  S.shown = end;
+  const more = $('#more');
+  if (more) more.textContent = end < res.length ? `Näytetään ${fmtInt(end)} / ${fmtInt(res.length)} – vieritä alas, niin lisää latautuu` : '';
+}
+$('#results').addEventListener('scroll', e => {
+  const b = e.target; if (b.scrollTop + b.clientHeight > b.scrollHeight - 300 && S.shown < S.results.length) renderResults(false);
+});
+$('#results').addEventListener('click', e => {
+  const th = e.target.closest('th[data-sort]');
+  if (th) { $('#sort').value = th.dataset.sort; compute({ fit: false }); return; }
+  const tr = e.target.closest('tr[data-i]'); if (tr) selectRow(ROWS[+tr.dataset.i], { pan: true });
+});
+$('#results').addEventListener('keydown', e => {
+  const tr = e.target.closest('tr[data-i]'); if (!tr) return;
+  if (e.key === 'Enter') { selectRow(ROWS[+tr.dataset.i], { pan: true }); }
+  else if (e.key === 'ArrowDown' && tr.nextElementSibling) { e.preventDefault(); tr.nextElementSibling.focus(); }
+  else if (e.key === 'ArrowUp' && tr.previousElementSibling) { e.preventDefault(); tr.previousElementSibling.focus(); }
+});
+
+/* ---------------- Ehtosirut ---------------- */
+function renderChips(st) {
+  const c = [];
+  const modeTxt = { sis: 'sisältää', alk: 'alkaa', tark: 'on täsmälleen', sum: 'muistuttaa' }[st.mode];
+  if (st.q) {
+    if (isRt(st.q)) c.push(['q', `Rekisteritunnus alkaa "${st.q}"`]);
+    else if (!looksCoord(st.q)) c.push(['q', `Nimi ${/[*?]/.test(st.q) ? 'vastaa' : modeTxt} "${st.q}"`]);
+  }
+  if (st.parish) c.push(['parish', `Pitäjä ${st.parishExact ? '=' : 'alkaa'} "${st.parish}"${st.period >= 0 ? ' vuonna ' + YEARS[st.period] : ''}${st.unc ? '' : ' (ilman epävarmoja)'}`]);
+  else if (st.period >= 0) c.push(['period', `Ajankohta ${YEARS[st.period]} (valitse myös pitäjä)`]);
+  if (st.y1 != null || st.y2 != null) { const a = st.y1 ?? st.y2, b = st.y2 ?? st.y1; c.push(['years', a === b ? `Olemassa vuonna ${a}` : `Olemassa ${Math.min(a, b)}–${Math.max(a, b)}`]); }
+  if (st.status) c.push(['status', $('#status').selectedOptions[0].text]);
+  if (st.rt) c.push(['rt', `Rekisteritunnus alkaa "${st.rt}"`]);
+  if (st.rk) c.push(['rk', `Rekisterikunta "${st.rk}"`]);
+  if (st.ry) c.push(['ry', `Rekisterikylä "${st.ry}"`]);
+  if (st.a1560) c.push(['a1560', `Asutus 1560 -viite "${st.a1560}"`]);
+  if (st.idq) c.push(['idq', `Tunniste ${st.idq}`]);
+  if (S.point) c.push(['point', `${st.radius} km säteellä: ${S.point.label}`]);
+  if (st.inView) c.push(['inView', 'Vain kartan näkyvä alue']);
+  const hasNames = { coords: 'on koordinaatit', nocoords: 'ei koordinaatteja', placeid: 'Nimistö-linkki', wd: 'Wikidata', yso: 'YSO-paikat', beb: 'Bebyggelsenamn', her: 'Heraldica', df: 'Diplomatarium Fennicum', a1560: 'Asutus 1560 -viite', maara: 'KA:n aineistoja' };
+  st.has.forEach(h => c.push(['has:' + h, hasNames[h]]));
+  $('#chips').innerHTML = c.map(([k, t]) => `<span class="chip">${esc(t)}<button data-chip="${k}" title="Poista ehto" aria-label="Poista ehto">×</button></span>`).join('');
+}
+$('#chips').addEventListener('click', e => {
+  const b = e.target.closest('[data-chip]'); if (!b) return;
+  const k = b.dataset.chip;
+  if (k === 'q') $('#q').value = '';
+  else if (k === 'parish') { $('#parish').value = ''; S.parishExact = false; }
+  else if (k === 'period') $('#period').value = '-1';
+  else if (k === 'years') { $('#y1').value = ''; $('#y2').value = ''; }
+  else if (k === 'point') clearPoint(false);
+  else if (k === 'inView') $('#inView').checked = false;
+  else if (k.startsWith('has:')) $(`[data-has="${k.slice(4)}"]`).checked = false;
+  else { const el = $('#' + k); if (el) el.value = ''; }
+  compute();
+});
+function openPanel(id, force) {
+  $$('.fpanel').forEach(p => { const on = p.id === id && (force || p.hidden); p.hidden = !on; });
+  $$('.ftabs button').forEach(b => b.setAttribute('aria-expanded', String(!$('#' + b.dataset.f).hidden)));
+}
+$$('.ftabs button').forEach(b => b.addEventListener('click', () => openPanel(b.dataset.f)));
+$$('.pclose').forEach(b => b.addEventListener('click', () => openPanel(null)));
+function updateSectionBadges(st) {
+  const set = (id, on) => { const s = $(`.ftabs button[data-f="${id}"] .on`); s.hidden = !on; s.title = 'Tämän osion ehtoja on käytössä'; };
+  set('fsName', st.mode !== 'sis' || st.useRkyla);
+  set('fsParish', !!st.parish || st.period >= 0 || !st.unc);
+  set('fsTime', st.y1 != null || st.y2 != null || !!st.status);
+  set('fsIds', !!(st.rt || st.rk || st.ry || st.a1560 || st.idq));
+  set('fsPlace', st.inView || !!S.point);
+  set('fsCoord', !!(S.point && S.point.fromCoord));
+  set('fsHas', st.has.length > 0);
+}
+
+/* ---------------- URL-tila ---------------- */
+function writeHash(st) {
+  const p = new URLSearchParams();
+  if (st.q) p.set('q', st.q);
+  if (st.mode !== 'sis') p.set('m', st.mode);
+  if (st.useRkyla) p.set('rkn', '1');
+  if (st.parish) { p.set('p', st.parish); if (st.parishExact) p.set('pe', '1'); }
+  if (st.period >= 0) p.set('pv', YEARS[st.period]);
+  if (!st.unc) p.set('u', '0');
+  if (st.y1 != null) p.set('y1', st.y1);
+  if (st.y2 != null) p.set('y2', st.y2);
+  ['status', 'rt', 'rk', 'ry', 'a1560', 'idq'].forEach(k => { if (st[k]) p.set(k, st[k]); });
+  if (S.point) { p.set('pt', `${S.point.x},${S.point.y}`); p.set('pl', S.point.label); }
+  if (st.radius !== 5) p.set('r', st.radius);
+  if (st.inView) p.set('nv', '1');
+  if (st.has.length) p.set('h', st.has.join(','));
+  if (st.sort !== 'auto') p.set('s', st.sort);
+  if (S.selected) p.set('v', S.selected.id);
+  const h = p.toString();
+  try { history.replaceState(null, '', h ? '#' + h : location.pathname + location.search); } catch (e) {}
+}
+function readHash() {
+  const p = new URLSearchParams(location.hash.slice(1));
+  const g = k => p.get(k);
+  if (g('q')) $('#q').value = g('q');
+  if (g('m')) { const el = $(`input[name=mode][value="${g('m')}"]`); if (el) el.checked = true; }
+  $('#useRkyla').checked = g('rkn') === '1';
+  if (g('p')) { $('#parish').value = g('p'); S.parishExact = g('pe') === '1'; }
+  if (g('pv')) { const i = YEARS.indexOf(+g('pv')); if (i >= 0) $('#period').value = i; }
+  $('#unc').checked = g('u') !== '0';
+  if (g('y1')) $('#y1').value = g('y1');
+  if (g('y2')) $('#y2').value = g('y2');
+  ['status', 'rt', 'rk', 'ry', 'a1560', 'idq'].forEach(k => { if (g(k)) $('#' + k).value = g(k); });
+  if (g('r')) $('#radius').value = g('r');
+  $('#inView').checked = g('nv') === '1';
+  if (g('h')) g('h').split(',').forEach(h => { const el = $(`[data-has="${h}"]`); if (el) el.checked = true; });
+  if (g('s')) $('#sort').value = g('s');
+  if (g('pt')) { const [x, y] = g('pt').split(',').map(Number); if (x && y) S.point = { x, y, label: g('pl') || 'valittu piste' }; }
+  return g('v') ? BY_ID.get(+g('v')) : null;
+}
+
+/* ======================================================================
+   Kartta
+   ====================================================================== */
+let MAP = null, PTS = null, POINT_LAYER = null, PICK = false, BASE = null, SENATE_LAYER = null;
+const SENATE_MINZOOM = 12;   // Paitulin palvelu piirtää venäläiset topografikartat vasta noin mittakaavasta 1:140 000 alkaen
+const baseParts = () => !BASE ? [] : (BASE.getLayers ? BASE.getLayers() : [BASE]);
+const COLORS = { ole: '#1f6f8b', lak: '#a0522d', luo: '#7b4fa0' };
+const PointLayer = L.Layer.extend({
+  initialize() { this._pts = []; this._scr = []; },
+  setPoints(rows) { this._pts = rows.filter(r => r.x != null); this._draw(); },
+  onAdd(map) {
+    this._map = map;
+    const c = this._c = L.DomUtil.create('canvas', 'leaflet-zoom-hide');
+    c.style.pointerEvents = 'none';
+    map.getPanes().overlayPane.appendChild(c);
+    this._tip = L.tooltip({ direction: 'top', offset: [0, -6], opacity: .95 });
+    map.on('moveend resize zoomend viewreset', this._reset, this);
+    map.on('mousemove', this._move, this);
+    map.on('mouseout', () => { map.closeTooltip(this._tip); map.getContainer().style.cursor = ''; });
+    this._reset();
+  },
+  onRemove(map) { this._c.remove(); map.off('moveend resize zoomend viewreset', this._reset, this); map.off('mousemove', this._move, this); },
+  _reset() {
+    const m = this._map, sz = m.getSize(), dpr = window.devicePixelRatio || 1, c = this._c;
+    c.width = sz.x * dpr; c.height = sz.y * dpr; c.style.width = sz.x + 'px'; c.style.height = sz.y + 'px';
+    L.DomUtil.setPosition(c, m.containerPointToLayerPoint([0, 0]));
+    this._draw();
+  },
+  _draw() {
+    if (!this._map) return;
+    const m = this._map, c = this._c, ctx = c.getContext('2d'), dpr = window.devicePixelRatio || 1, sz = m.getSize();
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, sz.x, sz.y);
+    const z = m.getZoom(), rad = z <= 6 ? 2.2 : z <= 8 ? 3.2 : z <= 10 ? 4.2 : 5.5;
+    this._scr = [];
+    for (const r of this._pts) {
+      const p = m.latLngToContainerPoint([r.lat, r.lon]);
+      if (p.x < -10 || p.y < -10 || p.x > sz.x + 10 || p.y > sz.y + 10) continue;
+      this._scr.push([p.x, p.y, r]);
+      ctx.beginPath(); ctx.arc(p.x, p.y, rad, 0, 2 * Math.PI);
+      ctx.fillStyle = COLORS[r.status]; ctx.fill();
+      if (z >= 9) { ctx.lineWidth = 1; ctx.strokeStyle = '#fff'; ctx.stroke(); }
+    }
+    const s = S.selected;
+    if (s && s.x != null) {
+      const p = m.latLngToContainerPoint([s.lat, s.lon]);
+      ctx.beginPath(); ctx.arc(p.x, p.y, 9, 0, 2 * Math.PI); ctx.lineWidth = 3; ctx.strokeStyle = '#d62828'; ctx.stroke();
+      ctx.beginPath(); ctx.arc(p.x, p.y, 4.5, 0, 2 * Math.PI); ctx.fillStyle = '#d62828'; ctx.fill();
+    }
+    if (z >= 11 && this._scr.length < 400) {
+      ctx.font = '12px "Segoe UI",Arial,sans-serif'; ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(255,255,255,.9)'; ctx.fillStyle = '#1d2a30';
+      for (const [x, y, r] of this._scr) { ctx.strokeText(r.nimi, x + 7, y + 4); ctx.fillText(r.nimi, x + 7, y + 4); }
+    }
+  },
+  hit(cp) {
+    let best = null, bd = 64;
+    for (const [x, y, r] of this._scr) { const d = (x - cp.x) ** 2 + (y - cp.y) ** 2; if (d < bd) { bd = d; best = r; } }
+    return best;
+  },
+  _move(e) {
+    if (PICK) return;
+    const r = this.hit(e.containerPoint), m = this._map;
+    m.getContainer().style.cursor = r ? 'pointer' : '';
+    if (r) { this._tip.setLatLng([r.lat, r.lon]).setContent(`<b>${esc(r.nimi)}</b>${r.oldParish ? '<br>' + esc(r.oldParish) : ''}`); if (!m.hasLayer(this._tip)) m.openTooltip(this._tip); }
+    else m.closeTooltip(this._tip);
+  }
+});
+
+function initMap() {
+  if (typeof L === 'undefined') return;
+  MAP = L.map('map', { zoomControl: true, preferCanvas: true }).setView([64.2, 26.5], 5);
+  // Huom: OpenStreetMapin ja CARTOn karttapalvelimet estävät pyynnöt, kun sivu avataan tiedostosta (ei Referer-otsaketta).
+  const bases = {
+    'Maastokartta (Esri)': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', { crossOrigin: 'anonymous', maxZoom: 19, attribution: 'Kartta: Esri, HERE, Garmin, © OpenStreetMapin tekijät ja GIS-käyttäjäyhteisö' }),
+    'Katukartta (Esri)': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', { crossOrigin: 'anonymous', maxZoom: 19, attribution: 'Kartta: Esri, HERE, Garmin, © OpenStreetMapin tekijät ja GIS-käyttäjäyhteisö' }),
+    'Maastokartta (OpenTopoMap)': L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', { crossOrigin: 'anonymous', maxZoom: 17, subdomains: 'abc', attribution: '© OpenStreetMapin tekijät, SRTM | © <a href="https://opentopomap.org" target="_blank" rel="noopener">OpenTopoMap</a> (CC BY-SA)' }),
+    'Ilmakuva (Esri)': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { crossOrigin: 'anonymous', maxZoom: 19, attribution: 'Ilmakuva: Esri, Maxar, Earthstar Geographics ja GIS-käyttäjäyhteisö' }),
+    'Senaatin kartasto – venäläinen topografikartta 1870–1944': L.layerGroup([
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', { crossOrigin: 'anonymous', maxZoom: 19, attribution: 'Pohja: Esri ja tekijät' }),
+      // 1:42 000 -kartat kattavat laajasti Etelä- ja Lounais-Suomen; tarkemmat 1:21 000 -kartat piirtyvät päälle siellä, missä niitä on (Helsingin–Vihdin seutu)
+      L.tileLayer.wms('https://paituli.csc.fi/geoserver/paituli/wms', { layers: 'paituli:mml_ven_topo_42k_1870_1944,paituli:mml_ven_topo_21k_1871_1919', format: 'image/png', transparent: true, version: '1.1.1', crossOrigin: 'anonymous', minZoom: SENATE_MINZOOM, maxZoom: 19, attribution: 'Venäläiset topografikartat 1:42 000 ja 1:21 000 © MML, CSC Paituli' })
+    ])
+  };
+  SENATE_LAYER = bases['Senaatin kartasto – venäläinen topografikartta 1870–1944'];
+  let baseName = 'Maastokartta (Esri)';
+  try { let b = localStorage.getItem('kylat.base'); if (b && !bases[b] && /^Senaatin kartasto/.test(b)) b = Object.keys(bases).find(k => k.startsWith('Senaatin kartasto')); if (b && bases[b]) baseName = b; } catch (e) {}
+  BASE = bases[baseName].addTo(MAP);
+  MAP.on('baselayerchange', e => { BASE = e.layer; updateSenateHint(); try { localStorage.setItem('kylat.base', e.name); } catch (er) {} });
+  const Hint = L.Control.extend({ options: { position: 'topright' }, onAdd() {
+    const d = L.DomUtil.create('div', 'maphint'); d.id = 'senateHint'; d.hidden = true;
+    L.DomEvent.disableClickPropagation(d);
+    L.DomEvent.on(d, 'click', e => { if (e.target.dataset.zoom) MAP.setZoom(SENATE_MINZOOM); });
+    return d; } });
+  new Hint().addTo(MAP);
+  MAP.on('zoomend', updateSenateHint);
+  L.control.layers(bases, null, { position: 'topright' }).addTo(MAP);
+  L.control.scale({ imperial: false }).addTo(MAP);
+  PTS = new PointLayer().addTo(MAP);
+  POINT_LAYER = L.layerGroup().addTo(MAP);
+
+  const Pick = L.Control.extend({ options: { position: 'topleft' }, onAdd() {
+    const d = L.DomUtil.create('div', 'mapbtns');
+    const b = L.DomUtil.create('button', 'pickbtn', d); b.id = 'pickBtn'; b.type = 'button';
+    b.textContent = 'Valitse piste kartalta'; b.title = 'Napsauta sen jälkeen karttaa: näet lähimmät kylät';
+    const s = L.DomUtil.create('button', 'pickbtn', d); s.id = 'saveMapBtn'; s.type = 'button';
+    s.textContent = 'Tallenna karttakuva'; s.title = 'Tallentaa kartan näkyvän alueen kuvana (PNG) selitteineen ja lähdetietoineen';
+    L.DomEvent.disableClickPropagation(d); L.DomEvent.disableScrollPropagation(d);
+    L.DomEvent.on(b, 'click', () => setPick(!PICK));
+    L.DomEvent.on(s, 'click', () => saveMapImage());
+    return d; } });
+  new Pick().addTo(MAP);
+  const Legend = L.Control.extend({ options: { position: 'bottomleft' }, onAdd() {
+    const d = L.DomUtil.create('div', 'legend');
+    d.innerHTML = '<span><span class="d lg-ole"></span>Edelleen kylä</span><span><span class="d lg-lak"></span>Lakannut</span><span><span class="d lg-luo"></span>Lakannut 1944 (luovutettu alue)</span><span><span class="d" style="border:2px solid #d62828;width:11px;height:11px;vertical-align:-1px"></span>Valittu</span>';
+    return d; } });
+  new Legend().addTo(MAP);
+
+  MAP.on('click', e => {
+    if (PICK) {
+      const [E, N] = Koord.wgsToTm35(e.latlng.lat, e.latlng.lng);
+      setPoint({ x: Math.round(E), y: Math.round(N), label: `karttapiste ${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}` });
+      setPick(false); return;
+    }
+    const r = PTS.hit(e.containerPoint);
+    if (r) selectRow(r, { pan: false, scrollList: true });
+  });
+  MAP.on('moveend', debounce(() => { if ($('#inView').checked) compute({ fromMap: true }); }, 250));
+}
+/* ---------------- Karttakuvan tallennus ---------------- */
+function fitText(g, txt, maxW) {
+  if (g.measureText(txt).width <= maxW) return txt;
+  while (txt.length > 1 && g.measureText(txt + '…').width > maxW) txt = txt.slice(0, -1);
+  return txt + '…';
+}
+function canvasToBlob(c) {
+  return new Promise((res, rej) => { try { c.toBlob(b => b ? res(b) : rej(new Error('toBlob')), 'image/png'); } catch (e) { rej(e); } });
+}
+function wrapText(g, txt, maxW) {
+  const words = txt.split(' '), lines = []; let cur = '';
+  for (const w of words) {
+    const t = cur ? cur + ' ' + w : w;
+    if (g.measureText(t).width <= maxW || !cur) cur = t; else { lines.push(cur); cur = w; }
+  }
+  if (cur) lines.push(cur);
+  return lines.map(l => fitText(g, l, maxW));
+}
+function drawMapImage(withTiles) {
+  const cont = MAP.getContainer(), mr = cont.getBoundingClientRect();
+  const W = Math.round(mr.width), H = Math.round(mr.height);
+  const dpr = Math.min(2, Math.max(1, window.devicePixelRatio || 1));
+  const F = '"Segoe UI", Arial, sans-serif', PAD = 12;
+  const st = readState();
+  // --- alareunan selitteen sisältö ja korkeus ---
+  const meas = document.createElement('canvas').getContext('2d');
+  const chips = [...document.querySelectorAll('#chips .chip')].map(ch => ch.firstChild.textContent);
+  let t1 = 'Suomen kylät 1540–1940 · ' + $('#count').textContent;
+  if (chips.length) t1 += ' · Ehdot: ' + chips.join(' · ');
+  if (S.selected) t1 += ' · Valittu kylä: ' + S.selected.nimi;
+  meas.font = `bold 14px ${F}`; const L1 = wrapText(meas, t1, W - 2 * PAD);
+  const attr = withTiles && BASE ? baseParts().map(l => String(l.options.attribution || '')).filter(Boolean).join(' + ').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim() : 'taustakarttaa ei voitu liittää';
+  const now = new Date();
+  const t3 = `Aineisto: Kansallisarkisto, Suomen kylät 1540–1940, versio 1 (CC BY 4.0) · Taustakartta: ${attr} · Tallennettu ${now.getDate()}.${now.getMonth() + 1}.${now.getFullYear()}`;
+  meas.font = `11px ${F}`; const L3 = wrapText(meas, t3, W - 2 * PAD);
+  meas.font = `12px ${F}`;
+  const items = [['ole', 'Edelleen kylä'], ['lak', 'Lakannut'], ['luo', 'Lakannut 1944 (luovutettu alue)']].map(([k, t]) => ({ k, t, w: 16 + meas.measureText(t).width + 16 }));
+  if (S.selected) items.push({ k: 'sel', t: 'Valittu kylä', w: 18 + meas.measureText('Valittu kylä').width + 16 });
+  if (S.point) items.push({ k: 'pt', t: `Etäisyysraja ${st.radius} km`, w: 18 + meas.measureText(`Etäisyysraja ${st.radius} km`).width + 16 });
+  // mittakaava
+  let scale = null;
+  const pa = MAP.containerPointToLatLng([W / 2, H / 2]), pb = MAP.containerPointToLatLng([W / 2 + 100, H / 2]);
+  const m100 = MAP.distance(pa, pb);
+  if (m100 > 0) {
+    const maxM = m100 * 1.5, pow = Math.pow(10, Math.floor(Math.log10(maxM))), d = maxM / pow;
+    const Lm = (d >= 5 ? 5 : d >= 2 ? 2 : 1) * pow, px = Lm / m100 * 100;
+    scale = { px, lbl: Lm >= 1000 ? `${(Lm / 1000).toLocaleString('fi-FI')} km` : `${Lm} m` };
+    items.push({ k: 'scale', w: px + 24 });
+  }
+  const rows = [[]]; let rw = 0;
+  for (const it of items) { if (rw + it.w > W - 2 * PAD && rows[rows.length - 1].length) { rows.push([]); rw = 0; } rows[rows.length - 1].push(it); rw += it.w; }
+  const BAND = 10 + L1.length * 19 + 8 + rows.length * 24 + 6 + L3.length * 15 - 4;
+  // --- piirto ---
+  const c = document.createElement('canvas');
+  c.width = Math.round(W * dpr); c.height = Math.round((H + BAND) * dpr);
+  const g = c.getContext('2d'); g.scale(dpr, dpr);
+  // Täysi (läpinäkymätön) tausta: läpinäkyvät alueet näkyisivät Windowsin kuvankatselussa mustina
+  g.fillStyle = '#ffffff'; g.fillRect(0, 0, W, H + BAND);
+  g.fillStyle = '#e8ecee'; g.fillRect(0, 0, W, H);
+  g.save(); g.beginPath(); g.rect(0, 0, W, H); g.clip();   // karttaosa rajataan kartan alueelle
+  if (withTiles) {
+    cont.querySelectorAll('.leaflet-tile-pane img.leaflet-tile-loaded').forEach(i => {
+      if (!i.naturalWidth) return;
+      const r = i.getBoundingClientRect();
+      g.drawImage(i, r.left - mr.left, r.top - mr.top, r.width, r.height);
+    });
+  }
+  if (S.point) {
+    const [lat, lon] = Koord.tm35ToWgs(S.point.x, S.point.y);
+    const [lat2, lon2] = Koord.tm35ToWgs(S.point.x, S.point.y + st.radius * 1000);
+    const cp = MAP.latLngToContainerPoint([lat, lon]), rp = Math.abs(MAP.latLngToContainerPoint([lat2, lon2]).y - cp.y);
+    g.beginPath(); g.arc(cp.x, cp.y, rp, 0, 2 * Math.PI); g.fillStyle = 'rgba(214,40,40,.05)'; g.fill();
+    g.lineWidth = 2; g.strokeStyle = '#d62828'; g.stroke();
+    g.beginPath(); g.arc(cp.x, cp.y, 5, 0, 2 * Math.PI); g.fillStyle = '#fff'; g.fill(); g.lineWidth = 3; g.stroke();
+  }
+  const pc = PTS._c, pr = pc.getBoundingClientRect();
+  if (pr.width) g.drawImage(pc, pr.left - mr.left, pr.top - mr.top, pr.width, pr.height);
+  g.restore();
+  g.fillStyle = '#c9c2b2'; g.fillRect(0, H, W, 1);
+  g.textBaseline = 'middle'; g.textAlign = 'left';
+  let y = H + 10 + 9;
+  g.fillStyle = '#1d2a30'; g.font = `bold 14px ${F}`;
+  L1.forEach(l => { g.fillText(l, PAD, y); y += 19; });
+  y += 8 - 19 + 12;
+  g.font = `12px ${F}`;
+  for (const row of rows) {
+    let x = PAD;
+    for (const it of row) {
+      if (it.k === 'scale') {
+        const sx = x + 4, px = scale.px;
+        g.strokeStyle = '#1d2a30'; g.lineWidth = 2;
+        g.beginPath(); g.moveTo(sx, y - 1); g.lineTo(sx, y + 6); g.lineTo(sx + px, y + 6); g.lineTo(sx + px, y - 1); g.stroke();
+        g.fillStyle = '#1d2a30'; g.textAlign = 'center'; g.fillText(scale.lbl, sx + px / 2, y - 4); g.textAlign = 'left';
+      } else if (it.k === 'sel' || it.k === 'pt') {
+        g.beginPath(); g.arc(x + 7, y, it.k === 'sel' ? 6 : 7, 0, 2 * Math.PI); g.lineWidth = it.k === 'sel' ? 2.5 : 2; g.strokeStyle = '#d62828'; g.stroke();
+        g.fillStyle = '#1d2a30'; g.fillText(it.t, x + 18, y);
+      } else {
+        g.beginPath(); g.arc(x + 6, y, 5.5, 0, 2 * Math.PI); g.fillStyle = COLORS[it.k]; g.fill();
+        g.fillStyle = '#1d2a30'; g.fillText(it.t, x + 16, y);
+      }
+      x += it.w;
+    }
+    y += 24;
+  }
+  y += 6 - 24 + 18;
+  g.fillStyle = '#5d6a70'; g.font = `11px ${F}`;
+  L3.forEach(l => { g.fillText(l, PAD, y); y += 15; });
+  return c;
+}
+const nextFrame = () => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+async function saveMapImage() {
+  if (!MAP) return;
+  const btn = $('#saveMapBtn'); btn.disabled = true; btn.textContent = 'Tallennetaan…';
+  try {
+    // Kartta levitetään tallennuksen ajaksi koko ikkunan levyiseksi (keskipiste säilyy)
+    document.body.classList.add('exporting');
+    MAP.invalidateSize({ animate: false });
+    await nextFrame();
+    for (const l of baseParts()) if (l.isLoading && l.isLoading()) await new Promise(r => { l.once('load', r); setTimeout(r, 6000); });
+    await nextFrame();
+    let blob, note = '';
+    try { blob = await canvasToBlob(drawMapImage(true)); }
+    catch (e) { blob = await canvasToBlob(drawMapImage(false)); note = ' (ilman taustakarttaa)'; }
+    const d = new Date(), stamp = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    const name = ('kartta_' + (S.selected ? S.selected.nimi + '_' : '') + stamp).replace(/[\\/:*?"<>|\s]/g, '_') + '.png';
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+    toast('Karttakuva tallennettu: ' + name + note);
+  } catch (e) {
+    toast('Karttakuvan tallennus epäonnistui: ' + e.message);
+  } finally {
+    if (document.body.classList.contains('exporting')) { document.body.classList.remove('exporting'); MAP.invalidateSize({ animate: false }); }
+    btn.disabled = false; btn.textContent = 'Tallenna karttakuva';
+  }
+}
+function updateSenateHint() {
+  const h = $('#senateHint'); if (!h || !MAP) return;
+  const on = BASE && BASE === SENATE_LAYER;
+  if (on && MAP.getZoom() < SENATE_MINZOOM) { h.innerHTML = 'Senaatin kartasto näkyy vasta lähennettäessä (noin mittakaavasta 1:140 000). <button class="btn sm" data-zoom="1">Lähennä</button>'; h.hidden = false; }
+  else if (on) {
+    if (!updateSenateHint.shown) { updateSenateHint.shown = true; h.textContent = 'Kartta kattaa Lounais-Suomen, Uudenmaan, Kymenlaakson, Hämeen ja Satakunnan (ei luovutettua Karjalaa). Muualla näkyy nykyinen maastokartta.'; h.hidden = false; setTimeout(() => { if (MAP.getZoom() >= SENATE_MINZOOM) h.hidden = true; }, 7000); }
+    else h.hidden = true;
+  }
+  else h.hidden = true;
+}
+function setPick(on) {
+  PICK = on;
+  const b = $('#pickBtn'); if (b) { b.classList.toggle('on', on); b.textContent = on ? 'Napsauta karttaa… (peru)' : 'Valitse piste kartalta'; }
+  if (MAP) L.DomUtil[on ? 'addClass' : 'removeClass'](MAP.getContainer(), 'map-pick');
+  if (on) showTab('kartta');
+}
+function fitResults(res) {
+  if (!MAP) return;
+  if (S.point) { drawPoint(); const c = POINT_LAYER.getLayers()[0]; if (c && c.getBounds) MAP.fitBounds(c.getBounds(), { padding: [20, 20] }); return; }
+  const pts = res.filter(r => r.x != null);
+  if (!pts.length || pts.length === ROWS.length || res.length === N_ALL) return;
+  if (pts.length > 4000) return;
+  let s = 90, w = 180, n = -90, e = -180;
+  for (const r of pts) { if (r.lat < s) s = r.lat; if (r.lat > n) n = r.lat; if (r.lon < w) w = r.lon; if (r.lon > e) e = r.lon; }
+  MAP.fitBounds([[s, w], [n, e]], { padding: [30, 30], maxZoom: 12 });
+}
+function drawPoint() {
+  if (!MAP) return;
+  POINT_LAYER.clearLayers();
+  if (!S.point) return;
+  const [lat, lon] = Koord.tm35ToWgs(S.point.x, S.point.y);
+  L.circle([lat, lon], { radius: +$('#radius').value * 1000, color: '#d62828', weight: 2, fillOpacity: .05, interactive: false }).addTo(POINT_LAYER);
+  L.circleMarker([lat, lon], { radius: 5, color: '#d62828', fillColor: '#fff', fillOpacity: 1, weight: 3, interactive: false }).addTo(POINT_LAYER);
+}
+function setPoint(p) {
+  S.point = p;
+  $('#pointInfo').textContent = `Paikkarajaus: ${p.label}`;
+  $('#clearPoint').hidden = false;
+  if ($('#sort').value === 'auto' || $('#sort').value === 'nimi') $('#sort').value = 'auto';
+  drawPoint();
+  compute();
+}
+function clearPoint(run = true) {
+  S.point = null;
+  $('#pointInfo').textContent = 'Valitse piste kartalta, kylän tietokortista ("Kylät lähellä") tai koordinaateista.';
+  $('#clearPoint').hidden = true;
+  drawPoint();
+  if (run) compute({ fit: false });
+}
+
+/* ======================================================================
+   Kylän tietokortti
+   ====================================================================== */
+/* ---------------- Pitäjänkartasto (Kansallisarkisto, Astia) ---------------- */
+const PK = RAW.pk || null;
+const ASTIA = { viewer: id => `https://astia.narc.fi/uusiastia/viewer/?aineistoId=${id}`, card: id => `https://astia.narc.fi/uusiastia/kortti_aineisto.html?id=${id}`, series: 'https://astia.narc.fi/uusiastia/kortti_aineisto.html?id=2382910588' };
+function pkFor(r) {
+  if (r.x == null) return null;
+  const y = Koord.ylj(r.lat, r.lon); if (!y) return null;
+  const stems = new Set();
+  r.vl.concat([fold(r.rkunta || '')]).forEach(v => v.split(/[,()]/).forEach(p => { const w = fold(p.trim().split(/\s+/)[0] || '').replace(/[^a-zåäö]/g, ''); if (w.length >= 4) stems.add(w.slice(0, 5)); }));
+  const keys = [y.l100 + y.l20].concat(y.extSheet ? [y.extSheet.replace(' ', '')] : []);
+  const maps = [...new Set(keys.flatMap(k => (PK && PK.k[k]) || []))].map(i => {
+    const [name, label, id] = PK.m[i];
+    const own = name.split(/[ ,]+/).some(w => { const f = fold(w).replace(/[^a-zåäö]/g, ''); return f.length >= 4 && stems.has(f.slice(0, 5)); });
+    return { name, label, id, own };
+  }).sort((a, b) => (b.own - a.own) || coll.compare(a.label, b.label));
+  return { ylj: y, maps };
+}
+function linksFor(r) {
+  const own = [], maps = [];
+  if (r.placeid) own.push(['Nimistö (MML)', 'http://paikkatiedot.fi/so/1000772/' + r.placeid, 'Paikannimen tietokortti, Maanmittauslaitos']);
+  if (r.x != null) own.push(['Karttapaikka (MML)', `https://asiointi.maanmittauslaitos.fi/karttapaikka/?lang=fi&n=${r.y}&e=${r.x}&zoom=10`, 'Maanmittauslaitoksen kartta kylän kohdalla']);
+  if (r.wd) own.push(['Wikidata', 'https://www.wikidata.org/wiki/Q' + r.wd, 'Wikidatan tietue']);
+  if (r.yso) own.push(['YSO-paikat (Finto)', 'https://finto.fi/yso-paikat/fi/page/' + r.yso, 'Yleinen suomalainen paikkaontologia']);
+  if (r.beb) own.push(['Bebyggelsenamn (SLS)', 'https://bebyggelsenamn.sls.fi/bebyggelsenamn/' + r.beb, 'Suomenruotsalaiset asutusnimet']);
+  if (r.her) own.push(['Heraldica (KA)', 'https://heraldica.narc.fi/toimija.html?id=' + r.her, 'Kansallisarkiston Europeana Heraldica']);
+  if (r.df) own.push(['Diplomatarium Fennicum (KA)', 'https://df.narc.fi/place/' + r.df, 'Keskiaikaiset asiakirjat']);
+  if (r.x != null) {
+    const la = r.lat.toFixed(6), lo = r.lon.toFixed(6);
+    maps.push(['OpenStreetMap', `https://www.openstreetmap.org/?mlat=${la}&mlon=${lo}#map=14/${la}/${lo}`, 'OpenStreetMap']);
+    maps.push(['Google Maps', `https://www.google.com/maps/search/?api=1&query=${la},${lo}`, 'Google Maps']);
+    maps.push(['Paikkatietoikkuna', `https://kartta.paikkatietoikkuna.fi/?lang=fi&zoomLevel=10&coord=${r.x}_${r.y}&showMarker=true`, 'Paikkatietoikkuna – Maanmittauslaitoksen karttapalvelu, mm. historialliset ilmakuvat']);
+  }
+  return { own, maps };
+}
+function timeline(r) {
+  const groups = [];
+  YEARS.forEach((y, i) => {
+    const key = r.v[i] || '';
+    const last = groups[groups.length - 1];
+    if (last && last.key === key) last.to = y; else groups.push({ key, from: y, to: y, i });
+  });
+  return groups.map(g => {
+    const yrs = g.from === g.to ? `${g.from}` : `${g.from}–${g.to}`;
+    if (!g.key) return `<li><span class="yrs">${yrs}</span><span class="none">ei tietoa</span></li>`;
+    const unc = g.key.includes('?');
+    return `<li><span class="yrs">${yrs}</span>${esc(r.vc[g.i])}${unc ? `<span class="tag" title="Aineistossa merkintä ${esc(g.key)}">epävarma</span>` : ''}</li>`;
+  }).join('');
+}
+function nearest(r, n = 6) {
+  if (r.x == null) return [];
+  const arr = [];
+  for (const o of ROWS) { if (o === r || o.x == null) continue; const d = Math.hypot(o.x - r.x, o.y - r.y); if (arr.length < n || d < arr[arr.length - 1][0]) { arr.push([d, o]); arr.sort((a, b) => a[0] - b[0]); if (arr.length > n) arr.pop(); } }
+  return arr;
+}
+let openQueue = null;
+function renderCard(r) {
+  openQueue = null;
+  const c = $('#card');
+  if (!r) { c.hidden = true; c.innerHTML = ''; (MAP && MAP.invalidateSize()); return; }
+  const others = [...new Set(r.muut)].filter(s => s !== r.nimi && s !== r.nimi2);
+  const { own, maps } = linksFor(r);
+  const lk = a => a.map(([t, u, ti]) => `<a href="${esc(u)}" target="_blank" rel="noopener" title="${esc(ti)}">${esc(t)}</a>`).join('');
+  const startTxt = r.start === 2023 ? '2023 – vanhaa lähdemainintaa ei vielä kirjattu' : r.start;
+  let coordHtml;
+  if (r.x != null) {
+    coordHtml = `<div class="coords">${coordFormats(r.x, r.y).map((f, k) => `<div class="crow"><div class="k"><b>${esc(f.k)}</b> · ${esc(f.u)}</div><button class="btn sm" data-copy="${k}" title="Kopioi leikepöydälle">Kopioi</button><div class="v">${esc(f.v)}</div></div>`).join('')}</div>
+      <div class="row2" style="margin-top:6px"><button class="btn sm" data-copy="all">Kopioi kaikki muodot</button></div>`;
+  } else coordHtml = '<div class="note">Tälle kylälle ei ole aineistossa koordinaatteja. Kylää ei siksi näytetä kartalla.</div>';
+  const near = nearest(r);
+  c.innerHTML = `
+    <div class="chead"><h2>${esc(r.nimi)}</h2>
+      <button class="btn sm" id="cardBig" title="Suurenna tai pienennä tietokortti">⇕</button>
+      <button class="btn sm" id="cardClose" title="Sulje tietokortti">Sulje ×</button></div>
+    <div class="badges"><span class="badge ${r.status}">${esc(statusText(r))}</span><span class="badge gr">Varhaisin maininta ${esc(r.start === 2023 ? '2023 (nykyinen nimistö)' : r.start)}</span>${r.x == null ? '<span class="badge gr">ei koordinaatteja</span>' : ''}</div>
+    <dl class="kv">
+      <dt>Nykyinen nimi</dt><dd>${esc(r.nimi)}</dd>
+      ${r.nimi2 !== r.nimi ? `<dt>Vanha kirjoitusasu</dt><dd>${esc(r.nimi2)}</dd>` : ''}
+      ${others.length ? `<dt>Muut nimimuodot</dt><dd>${esc(others.join(', '))}</dd>` : ''}
+    </dl>
+    <h3>Pitäjä ja kunta eri aikoina</h3>
+    <ul class="tl">${timeline(r)}</ul>
+    <h3>Ajoitus ja tunnisteet</h3>
+    <dl class="kv">
+      <dt>Varhaisin lähdemaininta</dt><dd>${esc(startTxt)}</dd>
+      <dt>Lakkaaminen</dt><dd>${r.end === 9999 ? 'edelleen kylä' : 'arviolta ' + r.end + (r.status === 'luo' ? ' (luovutettu alue)' : '')}</dd>
+      <dt>Rekisteritunnus</dt><dd>${esc(r.rt || '–')}</dd>
+      <dt>Rekisterikunta ja -kylä (2013)</dt><dd>${r.rkunta || r.rkyla ? esc([r.rkunta, r.rkyla].filter(Boolean).join(' / ')) : '–'}</dd>
+      <dt>Suomen asutus 1560-luvulla</dt><dd>${r.a1560 ? `sivu ${esc(r.a1560.split(',')[0])}, rivi ${esc(r.a1560.split(',')[1] || '')}` : '–'}</dd>
+      <dt>Kansallisarkiston aineistoja</dt><dd>${r.maara}</dd>
+      <dt>Aineiston tunniste</dt><dd>${r.id}</dd>
+    </dl>
+    <h3>Linkit <span class="sub">(avautuvat uuteen välilehteen)</span></h3>
+    ${own.length ? `<div class="links">${lk(own)}</div>${own.length > 1 ? `<div class="row2" style="margin-top:6px"><button class="btn sm" id="openAll">Avaa kaikki ${own.length} linkkiä</button></div><div class="note" id="openAllNote" hidden></div>` : ''}` : '<div class="sub">Aineistossa ei ole linkkejä tälle kylälle.</div>'}
+    ${maps.length ? `<div class="sub" style="margin-top:8px">Karttapalvelut:</div><div class="links">${lk(maps)}</div>` : ''}
+    ${pkHtml(r)}
+    <h3>Koordinaatit</h3>
+    ${coordHtml}
+    ${near.length ? `<h3>Lähimmät kylät</h3><ol class="near">${near.map(([d, o]) => `<li><a data-go="${o.i}">${esc(o.nimi)}</a> <span class="sub">${fmtKm(d)}${o.oldParish ? ' · ' + esc(o.oldParish) : ''}</span></li>`).join('')}</ol>
+      <div class="row2" style="margin-top:6px"><button class="btn sm" id="nearBtn">Näytä kylät ${$('#radius').value} km säteellä tästä kylästä</button></div>` : ''}
+    <h3>Tallenna kylä</h3>
+    <div class="row2"><button class="btn sm" data-cexp="kml">KML</button><button class="btn sm" data-cexp="gpx">GPX</button><button class="btn sm" data-cexp="geojson">GeoJSON</button><button class="btn sm" data-cexp="csv">CSV</button></div>`;
+  c.hidden = false;
+  c.scrollTop = 0;
+  c.onclick = e => {
+    const t = e.target;
+    if (t.id === 'cardClose') { selectRow(null); return; }
+    if (t.id === 'cardBig') { c.classList.toggle('big'); (MAP && MAP.invalidateSize()); return; }
+    if (t.dataset.copy != null) {
+      const f = coordFormats(r.x, r.y);
+      copyText(t.dataset.copy === 'all' ? `${r.nimi}\n` + f.map(x => `${x.k}: ${x.v}`).join('\n') : f[+t.dataset.copy].v); return;
+    }
+    if (t.id === 'openAll') {
+      // Selain sallii yleensä vain yhden uuden ikkunan napsautusta kohden. Avataan niin monta kuin selain sallii;
+      // loput avautuvat yksi kerrallaan seuraavilla napsautuksilla.
+      if (!openQueue || !openQueue.length) openQueue = own.slice();
+      let opened = 0;
+      while (openQueue.length) {
+        const w = window.open(openQueue[0][1], '_blank');
+        if (!w) break;
+        try { w.opener = null; } catch (e) {}
+        openQueue.shift(); opened++;
+      }
+      const note = $('#openAllNote');
+      if (openQueue.length) {
+        const done = own.length - openQueue.length;
+        t.textContent = `Avaa seuraava: ${openQueue[0][0]} (${done + 1}/${own.length})`;
+        t.classList.add('pri');
+        note.innerHTML = (opened ? `Avattu ${done}/${own.length}. ` : 'Selain esti linkin avaamisen. ') +
+          'Selain avaa vain yhden uuden välilehden napsautusta kohden, joten napsauta painiketta uudelleen, niin seuraava linkki aukeaa. ' +
+          'Kaikki aukeavat kerralla, jos sallit ponnahdusikkunat tälle sivulle: napsauta osoiterivin oikeaan reunaan ilmestynyttä estetyn ponnahdusikkunan kuvaketta ja valitse <i>Salli aina</i> (jos selain tarjoaa valinnan tiedostosta avatulle sivulle).';
+        note.hidden = false;
+      } else {
+        t.textContent = `Kaikki ${own.length} linkkiä avattu ✓ – avaa uudelleen`;
+        t.classList.remove('pri');
+        note.hidden = true;
+        openQueue = null;
+      }
+      return;
+    }
+    if (t.dataset.go != null) { selectRow(ROWS[+t.dataset.go], { pan: true, scrollList: true }); return; }
+    if (t.id === 'nearBtn') { setPoint({ x: r.x, y: r.y, label: r.nimi }); openPanel('fsPlace', true); return; }
+    if (t.dataset.cexp) { exportRows([r], t.dataset.cexp, 'kyla_' + r.nimi); return; }
+  };
+  (MAP && MAP.invalidateSize());
+}
+function pkHtml(r) {
+  const pk = pkFor(r);
+  if (!pk) return '';
+  const head = `<h3>Pitäjänkartasto <span class="sub">(Kansallisarkisto, Astia – avautuu uuteen välilehteen)</span></h3>
+    <div class="sub">Kylä on vanhan peruskartan karttalehdellä <b>${pk.ylj.sheet}</b> (yleislehtijako, 1:10 000 -lehti ${pk.ylj.code}).${pk.ylj.edge ? ` Kylä on KKJ-kaistan reunalla, jossa käytetään myös levennettyä reunalehteä <b>${pk.ylj.extSheet}</b>.` : ''} Pitäjänkartat on piirretty pääosin 1840–1865 mittakaavassa 1:20 000.</div>`;
+  if (!PK) return head;
+  if (!pk.maps.length) return head + `<div class="note">Pitäjänkartastossa ei ole karttaa lehdelle ${pk.ylj.sheet}${pk.ylj.edge ? ' tai ' + pk.ylj.extSheet : ''}. Naapurilehdiltä voi löytyä kartta, jos kylä on lähellä lehden reunaa. <a href="${ASTIA.series}" target="_blank" rel="noopener">Selaa koko pitäjänkartastoa Astiassa ↗</a></div>`;
+  return head + `<ul class="pklist">${pk.maps.map(m => `<li><a class="pkbtn" href="${ASTIA.viewer(m.id)}" target="_blank" rel="noopener" title="Avaa kartta Astian kuvankatseluun">Avaa kartta: ${esc(m.name)} <span class="sub">(${esc(m.label)})</span> ↗</a>${m.own ? '<span class="tag ok">kylän pitäjä</span>' : ''} · <a href="${ASTIA.card(m.id)}" target="_blank" rel="noopener" class="sub">kartan tiedot ↗</a></li>`).join('')}</ul>
+    <div class="sub">Samalta lehdeltä voi olla useamman pitäjän karttoja. Kylän pitäjän kartta on merkitty. Jos kylä on lähellä lehden reunaa, se voi näkyä myös naapurilehden kartalla.</div>`;
+}
+function selectRow(r, opts = {}) {
+  S.selected = r;
+  $$('#results tr.sel').forEach(t => t.classList.remove('sel'));
+  if (r) {
+    const tr = $(`#results tr[data-i="${r.i}"]`);
+    if (tr) { tr.classList.add('sel'); if (opts.scrollList) tr.scrollIntoView({ block: 'nearest' }); }
+  }
+  renderCard(r);
+  if (MAP) {
+    PTS._draw();
+    if (r && r.x != null && opts.pan !== false) MAP.setView([r.lat, r.lon], Math.max(MAP.getZoom(), BASE && BASE === SENATE_LAYER ? SENATE_MINZOOM : 11));
+  }
+  if (r && window.innerWidth <= 900) showTab('kyla');
+  writeHash(readState());
+}
+
+/* ======================================================================
+   Vienti
+   ====================================================================== */
+function download(text, name, mime) {
+  const blob = new Blob([text], { type: mime + ';charset=utf-8' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+}
+const xesc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+function descText(r) {
+  const grp = [];
+  YEARS.forEach((y, i) => { const v = r.v[i] || ''; const g = grp[grp.length - 1]; if (g && g.v === v) g.to = y; else grp.push({ v, from: y, to: y }); });
+  const pit = grp.filter(g => g.v).map(g => `${g.from === g.to ? g.from : g.from + '–' + g.to} ${g.v}`).join('; ');
+  const parts = [`Pitäjät: ${pit || '–'}`,
+    `Varhaisin maininta: ${r.start}`, `Tila: ${statusText(r)}`];
+  if (r.nimi2 !== r.nimi) parts.unshift(`Vanha kirjoitusasu: ${r.nimi2}`);
+  if (r.muut.length) parts.unshift(`Muut nimimuodot: ${r.muut.join(', ')}`);
+  if (r.rt) parts.push(`Rekisteritunnus: ${r.rt}`);
+  return parts.join('\n');
+}
+function exportRows(rows, fmt, base) {
+  base = (base || 'suomen_kylat_haku').replace(/[\\/:*?"<>|]/g, '_');
+  const withC = rows.filter(r => r.x != null), skipped = rows.length - withC.length;
+  const L2 = r => { const { own } = linksFor(r); return own.map(([t, u]) => `${t}: ${u}`).join('\n'); };
+  if (fmt === 'csv') {
+    const head = ['id', 'nimi', 'nimi_2', 'nimi_muu', 'start', 'end', ...YEARS.map(y => 'v' + y), 'tila', 'rekisteritunnus', 'rekisterikunta2013', 'rekisterikyla2013', 'asutus1560luv', 'maara', 'x_tm35fin', 'y_tm35fin', 'lat_wgs84', 'lon_wgs84', 'yleislehtijako', 'placeid', 'wikidata', 'ysopaikka', 'bebyggelsenamn', 'heraldica', 'df', 'karttapaikka'];
+    const q = v => { v = String(v ?? ''); return /[;"\n\r]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+    const dec = n => n == null ? '' : n.toFixed(6).replace('.', ',');
+    const lines = [head.join(';')];
+    for (const r of rows) {
+      const { own } = linksFor(r), lu = t => (own.find(o => o[0].startsWith(t)) || [])[1] || '';
+      lines.push([r.id, r.nimi, r.nimi2, r.muut.join('; '), r.start, r.end, ...r.v, statusText(r), r.rt, r.rkunta, r.rkyla, r.a1560, r.maara, r.x ?? '', r.y ?? '', dec(r.lat), dec(r.lon), r.x != null ? ((Koord.ylj(r.lat, r.lon) || {}).sheet || '') : '',
+        lu('Nimistö'), lu('Wikidata'), lu('YSO'), lu('Bebyggelsenamn'), lu('Heraldica'), lu('Diplomatarium'), lu('Karttapaikka')].map(q).join(';'));
+    }
+    download('﻿' + lines.join('\r\n'), base + '.csv', 'text/csv');
+    toast(`Tallennettu ${fmtInt(rows.length)} kylää CSV-tiedostoon`);
+    return;
+  }
+  if (!withC.length) { toast('Valituilla kylillä ei ole koordinaatteja'); return; }
+  if (fmt === 'geojson') {
+    const fc = { type: 'FeatureCollection', features: rows.map(r => ({ type: 'Feature', geometry: r.x != null ? { type: 'Point', coordinates: [+r.lon.toFixed(6), +r.lat.toFixed(6)] } : null,
+      properties: { id: r.id, nimi: r.nimi, nimi_2: r.nimi2, nimi_muu: r.muut.join('; '), start: r.start, end: r.end, ...Object.fromEntries(YEARS.map((y, i) => ['v' + y, r.v[i] || null])), rekisteritunnus: r.rt || null, x_tm35fin: r.x, y_tm35fin: r.y } })) };
+    download(JSON.stringify(fc, null, 1), base + '.geojson', 'application/geo+json');
+  } else if (fmt === 'kml') {
+    const pm = withC.map(r => `<Placemark><name>${xesc(r.nimi)}</name><description>${xesc(descText(r) + '\n' + L2(r))}</description><Point><coordinates>${r.lon.toFixed(6)},${r.lat.toFixed(6)},0</coordinates></Point></Placemark>`).join('\n');
+    download(`<?xml version="1.0" encoding="UTF-8"?>\n<kml xmlns="http://www.opengis.net/kml/2.2"><Document><name>${xesc(base)}</name><description>Lähde: Kansallisarkisto, Suomen kylät 1540–1940 (CC BY 4.0)</description>\n${pm}\n</Document></kml>`, base + '.kml', 'application/vnd.google-earth.kml+xml');
+  } else if (fmt === 'gpx') {
+    const wp = withC.map(r => `<wpt lat="${r.lat.toFixed(6)}" lon="${r.lon.toFixed(6)}"><name>${xesc(r.nimi)}</name><desc>${xesc(descText(r))}</desc></wpt>`).join('\n');
+    download(`<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="Suomen kylät -haku" xmlns="http://www.topografix.com/GPX/1/1"><metadata><name>${xesc(base)}</name><desc>Lähde: Kansallisarkisto, Suomen kylät 1540–1940 (CC BY 4.0)</desc></metadata>\n${wp}\n</gpx>`, base + '.gpx', 'application/gpx+xml');
+  }
+  toast(`Tallennettu ${fmtInt(fmt === 'geojson' ? rows.length : withC.length)} kylää${skipped && fmt !== 'geojson' ? ` (${skipped} ilman koordinaatteja jätettiin pois)` : ''}`);
+}
+$$('[data-exp]').forEach(b => b.addEventListener('click', () => {
+  if (!S.results.length) { toast('Ei tallennettavia kyliä'); return; }
+  const d = new Date(), stamp = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  exportRows(S.results, b.dataset.exp, 'suomen_kylat_haku_' + stamp);
+}));
+
+/* ======================================================================
+   Pikahaku ja ehdotukset
+   ====================================================================== */
+function suggestParishes(q, max) {
+  const l = q.toLowerCase();
+  if (l.length < 2) return [];
+  const starts = [], parts = [];
+  for (const p of PARISHES) {
+    if (p.l.startsWith(l)) starts.push(p); else if (p.parts.some(t => t.startsWith(l))) parts.push(p);
+  }
+  starts.sort((a, b) => b.n - a.n || coll.compare(a.name, b.name));
+  return starts.concat(parts.sort((a, b) => b.n - a.n)).slice(0, max);
+}
+let qAct = -1;
+function renderQSuggest() {
+  const q = $('#q').value.trim(), box = $('#qSuggest');
+  const items = [];
+  if (looksCoord(q) && !isRt(q)) {
+    const pc = parseCoords(q);
+    if (pc && !pc.err) items.push({ html: `Hae lähimmät kylät pisteestä <b>${pc.lat.toFixed(5)}, ${pc.lon.toFixed(5)}</b> <small>(tulkittu: ${esc(pc.txt)}) – Enter</small>`, act: () => applyCoord(pc, q) });
+    else if (pc && pc.err) items.push({ html: `<small>${esc(pc.err)}</small>`, act: null });
+  } else if (isRt(q)) {
+    items.push({ html: `Haetaan rekisteritunnuksella <b>${esc(q)}</b>…`, act: null });
+  } else if (q.length >= 2) {
+    suggestParishes(q, 6).forEach(p => items.push({ html: `Rajaa pitäjään/kuntaan: <b>${esc(p.name)}</b> <small>– ${fmtInt(p.n)} kylää</small>`, act: () => { $('#parish').value = p.name; S.parishExact = true; $('#q').value = ''; openPanel('fsParish', true); compute(); } }));
+  }
+  S.qItems = items; qAct = -1;
+  box.innerHTML = items.map((it, k) => `<div data-k="${k}">${it.html}</div>`).join('');
+  box.hidden = !items.length || document.activeElement !== $('#q');
+}
+function applyCoord(pc, raw) {
+  $('#q').value = '';
+  $('#coordIn').value = raw;
+  $('#coordMsg').textContent = `Tulkittu: ${pc.txt} → WGS84 ${pc.lat.toFixed(5)}, ${pc.lon.toFixed(5)} · TM35FIN N ${pc.y}, E ${pc.x}`;
+  $('#qSuggest').hidden = true;
+  setPoint({ x: pc.x, y: pc.y, label: `${pc.lat.toFixed(4)}, ${pc.lon.toFixed(4)}`, fromCoord: true });
+  openPanel('fsCoord', true);
+}
+const runQ = debounce(() => compute(), 160);
+$('#q').addEventListener('input', () => { renderQSuggest(); runQ(); });
+$('#q').addEventListener('focus', renderQSuggest);
+$('#q').addEventListener('blur', () => setTimeout(() => { $('#qSuggest').hidden = true; }, 200));
+$('#q').addEventListener('keydown', e => {
+  const items = S.qItems || [], box = $('#qSuggest');
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+    if (!items.length) return; e.preventDefault();
+    qAct = (qAct + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length;
+    $$('#qSuggest div').forEach((d, k) => d.classList.toggle('act', k === qAct));
+  } else if (e.key === 'Enter') {
+    const it = qAct >= 0 ? items[qAct] : (looksCoord($('#q').value) && items[0]) ? items[0] : null;
+    if (it && it.act) { e.preventDefault(); box.hidden = true; it.act(); }
+    else { box.hidden = true; compute(); }
+  } else if (e.key === 'Escape') box.hidden = true;
+});
+$('#qSuggest').addEventListener('mousedown', e => { const d = e.target.closest('[data-k]'); if (!d) return; e.preventDefault(); const it = S.qItems[+d.dataset.k]; if (it && it.act) { $('#qSuggest').hidden = true; it.act(); } });
+$('#qClear').addEventListener('click', () => { $('#q').value = ''; $('#qSuggest').hidden = true; compute({ fit: false }); $('#q').focus(); });
+
+// Pitäjäkentän ehdotukset
+$('#parish').addEventListener('input', () => {
+  S.parishExact = false;
+  const q = $('#parish').value.trim(), box = $('#parishSuggest');
+  const list = suggestParishes(q, 30);
+  box.innerHTML = list.map(p => `<div data-p="${esc(p.name)}">${esc(p.name)} <small>${fmtInt(p.n)}</small></div>`).join('');
+  box.hidden = !list.length;
+  runQ();
+});
+$('#parish').addEventListener('blur', () => setTimeout(() => { $('#parishSuggest').hidden = true; }, 200));
+$('#parish').addEventListener('keydown', e => { if (e.key === 'Enter') { $('#parishSuggest').hidden = true; compute(); } if (e.key === 'Escape') $('#parishSuggest').hidden = true; });
+$('#parishSuggest').addEventListener('mousedown', e => { const d = e.target.closest('[data-p]'); if (!d) return; e.preventDefault(); $('#parish').value = d.dataset.p; S.parishExact = true; $('#parishSuggest').hidden = true; compute(); });
+
+// Muut ohjaimet
+['#period', '#unc', '#status', '#useRkyla', '#sort'].forEach(s => $(s).addEventListener('change', () => compute({ fit: s !== '#sort' })));
+$$('input[name=mode]').forEach(el => el.addEventListener('change', () => compute()));
+$$('[data-has]').forEach(el => el.addEventListener('change', () => compute()));
+['#y1', '#y2', '#rt', '#rk', '#ry', '#a1560', '#idq'].forEach(s => $(s).addEventListener('input', runQ));
+$('#inView').addEventListener('change', () => compute({ fit: false }));
+$('#radius').addEventListener('change', () => { drawPoint(); compute(); if (S.selected) renderCard(S.selected); });
+$('#clearPoint').addEventListener('click', () => clearPoint());
+$('#pickBtn2').addEventListener('click', () => setPick(true));
+$('#coordGo').addEventListener('click', () => {
+  const raw = $('#coordIn').value, pc = parseCoords(raw);
+  if (!pc) { $('#coordMsg').textContent = 'Kirjoita koordinaatit ensin.'; return; }
+  if (pc.err) { $('#coordMsg').textContent = pc.err; return; }
+  applyCoord(pc, raw);
+});
+$('#coordIn').addEventListener('keydown', e => { if (e.key === 'Enter') $('#coordGo').click(); });
+$('#resetAll').addEventListener('click', () => {
+  $('#q').value = ''; $('#parish').value = ''; S.parishExact = false; $('#period').value = '-1'; $('#unc').checked = true;
+  $('input[name=mode][value=sis]').checked = true; $('#useRkyla').checked = false;
+  ['#y1', '#y2', '#rt', '#rk', '#ry', '#a1560', '#idq', '#coordIn'].forEach(s => $(s).value = '');
+  $('#status').value = ''; $('#inView').checked = false; $$('[data-has]').forEach(c => c.checked = false); $('#sort').value = 'auto';
+  clearPoint(false); selectRow(null);
+  compute({ fit: false });
+  if (MAP) MAP.setView([64.2, 26.5], 5);
+});
+$('#helpBtn').addEventListener('click', () => $('#helpDlg').showModal());
+$('#helpClose').addEventListener('click', () => $('#helpDlg').close());
+document.addEventListener('keydown', e => { if (e.key === '/' && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) { e.preventDefault(); $('#q').focus(); } });
+function showTab(t) {
+  document.body.dataset.tab = t;
+  $$('#tabs button').forEach(b => b.classList.toggle('act', b.dataset.tab === t));
+  if (t === 'kartta' && MAP) setTimeout(() => MAP.invalidateSize(), 50);
+}
+$$('#tabs button').forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
+const OHJELMAN_VERSIO = '1.0';
+$('#buildInfo').textContent = `Versio ${OHJELMAN_VERSIO} · rakennettu ${RAW.meta.rakennettu} tiedostosta ${RAW.meta.csv}`;
+
+/* ======================================================================
+   Käynnistys
+   ====================================================================== */
+initMap();
+const startSel = readHash();
+if (S.point) { $('#pointInfo').textContent = `Paikkarajaus: ${S.point.label}`; $('#clearPoint').hidden = false; drawPoint(); }
+compute({ fit: !startSel });
+if (startSel) selectRow(startSel, { pan: true, scrollList: true });
+window.KYLAT = { ROWS, Koord, parseCoords, fuzzyKey, compute, S };
+</script>
+</body>
+</html>
